@@ -1,0 +1,83 @@
+import { Toaster } from "@/components/ui/toaster"
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClientInstance } from '@/lib/query-client'
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import PageNotFound from './lib/PageNotFound';
+import { AuthProvider } from '@/lib/AuthContext';
+import { LeadModalProvider } from '@/components/LeadModal';
+import CookieConsent from '@/components/CookieConsent';
+
+import MainLayout from './components/layout/MainLayout';
+import Home from './pages/Home';
+import About from './pages/About';
+import Team from './pages/about/Team';
+import Mission from './pages/about/Mission';
+import News from './pages/about/News';
+import Vacancies from './pages/about/Vacancies';
+import Documents from './pages/about/Documents';
+import Science from './pages/Science';
+import Directions from './pages/science/Directions';
+import Labs from './pages/science/Labs';
+import Publications from './pages/science/Publications';
+import Conferences from './pages/science/Conferences';
+import International from './pages/science/International';
+import Education from './pages/Education';
+import PsyMedia from './pages/PsyMedia';
+import PsyTorg from './pages/PsyTorg';
+import PsyPay from './pages/PsyPay';
+import PsyTech from './pages/PsyTech';
+import Accelerator from './pages/psytech/Accelerator';
+import Crowdfunding from './pages/psytech/Crowdfunding';
+import Fund from './pages/psytech/Fund';
+import Psyty from './pages/Psyty';
+import Contacts from './pages/Contacts';
+import MediaLibrary from './pages/MediaLibrary';
+
+function App() {
+  return (
+    <AuthProvider>
+      <LeadModalProvider>
+        <CookieConsent />
+        <QueryClientProvider client={queryClientInstance}>
+          <Router>
+            <Routes>
+              <Route element={<MainLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/about/team" element={<Team />} />
+                <Route path="/about/mission" element={<Mission />} />
+                <Route path="/about/news" element={<News />} />
+                <Route path="/about/vacancies" element={<Vacancies />} />
+                <Route path="/about/documents" element={<Documents />} />
+                <Route path="/science" element={<Science />} />
+                <Route path="/science/directions" element={<Directions />} />
+                <Route path="/science/labs" element={<Labs />} />
+                <Route path="/science/publications" element={<Publications />} />
+                <Route path="/science/conferences" element={<Conferences />} />
+                <Route path="/science/international" element={<International />} />
+                <Route path="/science/programs" element={<Science />} />
+                <Route path="/science/partnerships" element={<Science />} />
+                <Route path="/education" element={<Education />} />
+                <Route path="/psypedia" element={<Navigate to="/library" replace />} />
+                <Route path="/psymedia" element={<PsyMedia />} />
+                <Route path="/psytorg" element={<PsyTorg />} />
+                <Route path="/psypay" element={<PsyPay />} />
+                <Route path="/psytech" element={<PsyTech />} />
+                <Route path="/psytech/accelerator" element={<Accelerator />} />
+                <Route path="/psytech/crowdfunding" element={<Crowdfunding />} />
+                <Route path="/psytech/fund" element={<Fund />} />
+                <Route path="/psyty" element={<Psyty />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/library" element={<MediaLibrary />} />
+              </Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Router>
+          <Toaster />
+        </QueryClientProvider>
+      </LeadModalProvider>
+    </AuthProvider>
+  )
+}
+
+export default App
