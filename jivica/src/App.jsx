@@ -8,25 +8,27 @@ import { LeadModalProvider } from '@/components/LeadModal';
 import CookieConsent from '@/components/CookieConsent';
 import ScrollToTop from './components/ScrollToTop';
 import Landing from '@/pages/Landing';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
 
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
 
 function App() {
   return (
     <AuthProvider>
-      <LeadModalProvider>
-        <CookieConsent />
-        <QueryClientProvider client={queryClientInstance}>
-          <Router basename={routerBasename}>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router basename={routerBasename}>
+          <LeadModalProvider>
+            <CookieConsent />
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Landing />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
-          </Router>
+          </LeadModalProvider>
           <Toaster />
-        </QueryClientProvider>
-      </LeadModalProvider>
+        </Router>
+      </QueryClientProvider>
     </AuthProvider>
   );
 }

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const LeadModalContext = createContext();
 
@@ -135,9 +136,9 @@ function LeadModal({ onClose }) {
                 />
                 <span>
                   Я даю согласие на обработку персональных данных в соответствии с{' '}
-                  <a href="#privacy-policy" style={{ color: '#2563eb' }}>
+                  <Link to="/privacy" style={{ color: '#2563eb' }} onClick={(e) => e.stopPropagation()}>
                     политикой конфиденциальности
-                  </a>
+                  </Link>
                 </span>
               </label>
               <button

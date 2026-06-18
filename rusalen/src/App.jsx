@@ -32,16 +32,17 @@ import Fund from './pages/psytech/Fund';
 import Psyty from './pages/Psyty';
 import Contacts from './pages/Contacts';
 import MediaLibrary from './pages/MediaLibrary';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
 
 function App() {
   return (
     <AuthProvider>
-      <LeadModalProvider>
-        <CookieConsent />
-        <QueryClientProvider client={queryClientInstance}>
-          <Router basename={routerBasename}>
+      <QueryClientProvider client={queryClientInstance}>
+        <Router basename={routerBasename}>
+          <LeadModalProvider>
+            <CookieConsent />
             <Routes>
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />
@@ -71,13 +72,14 @@ function App() {
                 <Route path="/psyty" element={<Psyty />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/library" element={<MediaLibrary />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
               </Route>
               <Route path="*" element={<PageNotFound />} />
             </Routes>
-          </Router>
+          </LeadModalProvider>
           <Toaster />
-        </QueryClientProvider>
-      </LeadModalProvider>
+        </Router>
+      </QueryClientProvider>
     </AuthProvider>
   )
 }

@@ -314,6 +314,32 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Карта помощи — заглушка */}
+      <section id="map" className="py-16 bg-secondary/20 scroll-mt-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <MapPin className="w-10 h-10 text-primary mx-auto mb-4" />
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-3">Карта помощи</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Контент появится в ближайшее время
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Специалисты — заглушка */}
+      <section id="specialists" className="py-16 bg-background scroll-mt-14">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <Users className="w-10 h-10 text-primary mx-auto mb-4" />
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-foreground mb-3">Специалисты</h2>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Контент появится в ближайшее время
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Emergency Contacts */}
       <section id="contacts" className="py-16 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -377,8 +403,8 @@ export default function Landing() {
               <h4 className="font-semibold text-white/80 mb-3 text-sm">Платформа</h4>
               <div className="space-y-2 text-sm text-white/50">
                 <div><Link to="/dashboard" className="hover:text-white/80 transition-colors">Личный кабинет</Link></div>
-                <div><Link to="/help-map" className="hover:text-white/80 transition-colors">Карта помощи</Link></div>
-                <div><Link to="/specialists" className="hover:text-white/80 transition-colors">Специалисты</Link></div>
+                <div><a href="#map" className="hover:text-white/80 transition-colors">Карта помощи</a></div>
+                <div><a href="#specialists" className="hover:text-white/80 transition-colors">Специалисты</a></div>
                 <div><Link to="/community" className="hover:text-white/80 transition-colors">Сообщество</Link></div>
               </div>
             </div>

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const STORAGE_KEY = 'cookie_consent_accepted';
 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     try {
@@ -36,7 +36,7 @@ export default function CookieConsent() {
         bottom: 0,
         left: 0,
         right: 0,
-        zIndex: 1000,
+        zIndex: 99999,
         padding: '1rem',
         background: 'var(--cookie-banner-bg, #ffffff)',
         color: 'var(--cookie-banner-text, #1f2937)',
@@ -78,17 +78,10 @@ export default function CookieConsent() {
         <p style={{ flex: '1 1 280px', margin: 0, fontSize: '0.9rem', lineHeight: 1.5 }}>
           Мы используем файлы cookie для корректной работы сайта и улучшения пользовательского опыта.
           Продолжая пользоваться сайтом, вы соглашаетесь с их использованием.
-          {showDetails && (
-            <span style={{ display: 'block', marginTop: '0.5rem', color: 'var(--cookie-banner-muted)' }}>
-              Cookie помогают нам анализировать посещаемость и улучшать сервис. Вы можете отключить
-              cookie в настройках браузера, но часть функций сайта может работать некорректно.
-            </span>
-          )}
         </p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-          <button
-            type="button"
-            onClick={() => setShowDetails((v) => !v)}
+          <Link
+            to="/privacy"
             style={{
               padding: '0.5rem 1rem',
               fontSize: '0.875rem',
@@ -97,11 +90,11 @@ export default function CookieConsent() {
               borderRadius: '6px',
               background: 'transparent',
               color: 'var(--cookie-banner-text)',
-              cursor: 'pointer',
+              textDecoration: 'none',
             }}
           >
             Подробнее
-          </button>
+          </Link>
           <button
             type="button"
             onClick={accept}
