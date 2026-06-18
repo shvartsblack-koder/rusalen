@@ -9,13 +9,15 @@ import CookieConsent from '@/components/CookieConsent';
 import ScrollToTop from './components/ScrollToTop';
 import Landing from '@/pages/Landing';
 
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
+
 function App() {
   return (
     <AuthProvider>
       <LeadModalProvider>
         <CookieConsent />
         <QueryClientProvider client={queryClientInstance}>
-          <Router basename="/jivica">
+          <Router basename={routerBasename}>
             <ScrollToTop />
             <Routes>
               <Route path="/" element={<Landing />} />

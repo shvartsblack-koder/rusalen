@@ -33,13 +33,15 @@ import Psyty from './pages/Psyty';
 import Contacts from './pages/Contacts';
 import MediaLibrary from './pages/MediaLibrary';
 
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
+
 function App() {
   return (
     <AuthProvider>
       <LeadModalProvider>
         <CookieConsent />
         <QueryClientProvider client={queryClientInstance}>
-          <Router>
+          <Router basename={routerBasename}>
             <Routes>
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />

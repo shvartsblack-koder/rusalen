@@ -24,21 +24,26 @@ jobs:
         with:
           node-version: 20
 
+      # GitHub Pages project site: https://shvartsblack-koder.github.io/rusalen/
+      # When rusalen.ru custom domain is attached, set repo variable VITE_BASE_RUSALEN=/
       - name: Build rusalen
         working-directory: ./rusalen
         run: |
           npm install
           npm run build
         env:
+          VITE_BASE: ${{ vars.VITE_BASE_RUSALEN || '/rusalen/' }}
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
           VITE_PROJECT_NAME: rusalen
 
+      # Served at /rusalen/jivica/ — with custom domain use vars.VITE_BASE_JIVICA=/jivica/
       - name: Build jivica
         working-directory: ./jivica
         run: |
           npm install
           npm run build
         env:
+          VITE_BASE: ${{ vars.VITE_BASE_JIVICA || '/rusalen/jivica/' }}
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
           VITE_PROJECT_NAME: jivica
 
