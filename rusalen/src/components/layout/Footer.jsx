@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Send, MapPin, Phone, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { isValidEmail, VALIDATION_MESSAGES } from '@/lib/formValidation';
+import { submitLead } from '@/lib/submitLead';
 
 const footerNav = [
   { title: 'Центр', links: [
@@ -29,13 +31,32 @@ const footerNav = [
 
 export default function Footer() {
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [subscribed, setSubscribed] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (email) {
+    if (!isValidEmail(email)) {
+      setEmailError(VALIDATION_MESSAGES.email);
+      return;
+    }
+
+    setEmailError('');
+    setLoading(true);
+    try {
+      await submitLead({
+        name: 'Подписка на новости',
+        email,
+        phone: '',
+        source: `${window.location.pathname} | подписка на рассылку`,
+      });
       setSubscribed(true);
       setEmail('');
+    } catch (err) {
+      console.error('Newsletter subscription error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,21 +110,27 @@ export default function Footer() {
               <h4 className="font-display text-lg font-semibold mb-1">Подпишитесь на новости</h4>
               <p className="text-sm text-muted-foreground">Получайте актуальные новости, анонсы и исследования РУСАЛЕН</p>
             </div>
-            <form onSubmit={handleSubscribe} className="flex gap-2 w-full md:w-auto">
+            <form onSubmit={handleSubscribe} noValidate className="flex flex-col gap-1 w-full md:w-auto">
               {subscribed ? (
                 <p className="text-sm text-accent">Вы успешно подписались!</p>
               ) : (
                 <>
-                  <Input
-                    type="email"
-                    placeholder="Ваш email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-secondary border-border w-full md:w-64"
-                  />
-                  <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/80 shrink-0">
-                    <Send className="w-4 h-4" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Input
+                      type="email"
+                      placeholder="Ваш email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (emailError) setEmailError('');
+                      }}
+                      className={`bg-secondary w-full md:w-64 ${emailError ? 'border-destructive' : 'border-border'}`}
+                    />
+                    <Button type="submit" disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/80 shrink-0">
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  {emailError && <p className="text-destructive text-xs">{emailError}</p>}
                 </>
               )}
             </form>

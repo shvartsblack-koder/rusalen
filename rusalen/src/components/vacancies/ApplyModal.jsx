@@ -1,33 +1,68 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle2, Loader2 } from 'lucide-react';
+import { validateLeadFields } from '@/lib/formValidation';
+import { submitLead } from '@/lib/submitLead';
+
+function FieldError({ message }) {
+  if (!message) return null;
+  return <p className="text-destructive text-xs mt-1">{message}</p>;
+}
 
 export default function ApplyModal({ vacancy, open, onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    await base44.entities.JobApplication.create({
-      vacancy_id: vacancy.id,
-      vacancy_title: vacancy.title,
+
+    const { valid, errors: validationErrors } = validateLeadFields({
       ...form,
+      phoneRequired: true,
     });
-    setLoading(false);
-    setSuccess(true);
+    setErrors(validationErrors);
+    if (!valid) return;
+
+    setLoading(true);
+    try {
+      const source = [
+        window.location.pathname,
+        'отклик на вакансию',
+        vacancy?.title && `вакансия: ${vacancy.title}`,
+        form.message?.trim() && `письмо: ${form.message.trim()}`,
+      ].filter(Boolean).join(' | ');
+
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        source,
+      });
+      setSuccess(true);
+    } catch (err) {
+      console.error('Job application error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
     setSuccess(false);
     setForm({ name: '', email: '', phone: '', message: '' });
+    setErrors({});
     onClose();
   };
 
@@ -54,7 +89,7 @@ export default function ApplyModal({ vacancy, open, onClose }) {
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 mt-2">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4 mt-2">
             <div>
               <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Имя *</label>
               <Input
@@ -62,9 +97,9 @@ export default function ApplyModal({ vacancy, open, onClose }) {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Ваше имя"
-                required
-                className="bg-secondary border-border"
+                className={`bg-secondary ${errors.name ? 'border-destructive' : 'border-border'}`}
               />
+              <FieldError message={errors.name} />
             </div>
             <div>
               <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Email *</label>
@@ -74,19 +109,21 @@ export default function ApplyModal({ vacancy, open, onClose }) {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                required
-                className="bg-secondary border-border"
+                className={`bg-secondary ${errors.email ? 'border-destructive' : 'border-border'}`}
               />
+              <FieldError message={errors.email} />
             </div>
             <div>
-              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Телефон</label>
+              <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Телефон *</label>
               <Input
                 name="phone"
+                type="tel"
                 value={form.phone}
                 onChange={handleChange}
-                placeholder="+7 (___) ___-__-__"
-                className="bg-secondary border-border"
+                placeholder="+7 (999) 123-45-67"
+                className={`bg-secondary ${errors.phone ? 'border-destructive' : 'border-border'}`}
               />
+              <FieldError message={errors.phone} />
             </div>
             <div>
               <label className="text-xs font-mono uppercase tracking-wider text-muted-foreground mb-1 block">Сопроводительное письмо</label>

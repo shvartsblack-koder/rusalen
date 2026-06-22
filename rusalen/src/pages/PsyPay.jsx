@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { validateLeadFields } from '@/lib/formValidation';
+import { submitLead } from '@/lib/submitLead';
 import { motion } from 'framer-motion';
 import PageHero from '../components/shared/PageHero';
 import SectionHeader from '../components/shared/SectionHeader';
@@ -42,17 +43,60 @@ const steps = [
   { icon: Key, num: '03', title: 'Доступ', desc: 'Получите доступ к счёту и платёжные реквизиты' },
 ];
 
+function FieldError({ message }) {
+  if (!message) return null;
+  return <p className="text-destructive text-xs mt-1">{message}</p>;
+}
+
 export default function PsyPay() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', country: '', activity_type: '', expected_turnover: '', comment: '' });
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle');
+
+  const updateField = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { valid, errors: validationErrors } = validateLeadFields({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      phoneRequired: false,
+    });
+    setErrors(validationErrors);
+    if (!valid) return;
+
     setStatus('sending');
-    await base44.entities.PsyPayApplication.create(form);
-    setStatus('success');
-    setForm({ name: '', email: '', phone: '', country: '', activity_type: '', expected_turnover: '', comment: '' });
-    setTimeout(() => setStatus('idle'), 5000);
+    try {
+      const source = [
+        window.location.pathname,
+        'PsyPay — открытие счёта',
+        form.country && `страна: ${form.country}`,
+        form.activity_type && `деятельность: ${form.activity_type}`,
+        form.expected_turnover && `оборот: ${form.expected_turnover}`,
+        form.comment?.trim() && `комментарий: ${form.comment.trim()}`,
+      ].filter(Boolean).join(' | ');
+
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        source,
+      });
+      setStatus('success');
+      setForm({ name: '', email: '', phone: '', country: '', activity_type: '', expected_turnover: '', comment: '' });
+      setErrors({});
+      setTimeout(() => setStatus('idle'), 5000);
+    } catch (err) {
+      console.error('PsyPay form error:', err);
+      setStatus('idle');
+    }
   };
 
   return (
@@ -150,11 +194,20 @@ export default function PsyPay() {
               <p className="text-muted-foreground text-sm">Мы свяжемся с вами в ближайшее время</p>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 sm:p-8 space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="glass rounded-2xl p-6 sm:p-8 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input placeholder="Имя *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />
-                <Input type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />
-                <Input placeholder="Телефон" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />
+                <div>
+                  <Input placeholder="Имя *" value={form.name} onChange={(e) => updateField('name', e.target.value)} className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.name ? 'border-destructive' : 'border-border/50'}`} />
+                  <FieldError message={errors.name} />
+                </div>
+                <div>
+                  <Input type="email" placeholder="Email *" value={form.email} onChange={(e) => updateField('email', e.target.value)} className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.email ? 'border-destructive' : 'border-border/50'}`} />
+                  <FieldError message={errors.email} />
+                </div>
+                <div>
+                  <Input type="tel" placeholder="Телефон" value={form.phone} onChange={(e) => updateField('phone', e.target.value)} className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.phone ? 'border-destructive' : 'border-border/50'}`} />
+                  <FieldError message={errors.phone} />
+                </div>
                 <Input placeholder="Страна" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />
                 <Input placeholder="Вид деятельности" value={form.activity_type} onChange={(e) => setForm({ ...form, activity_type: e.target.value })} className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />
                 <Input placeholder="Ожидаемый оборот" value={form.expected_turnover} onChange={(e) => setForm({ ...form, expected_turnover: e.target.value })} className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0" />

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { validateLeadFields } from '@/lib/formValidation';
+import { submitLead } from '@/lib/submitLead';
 
 const LeadModalContext = createContext();
 
@@ -17,44 +19,64 @@ export const LeadModalProvider = ({ children }) => {
 
 export const useLeadModal = () => useContext(LeadModalContext);
 
-const WEBHOOK_URL = import.meta.env.VITE_LEADS_WEBHOOK_URL;
-const PROJECT_NAME = import.meta.env.VITE_PROJECT_NAME || 'unknown';
+const fieldStyle = {
+  width: '100%',
+  padding: '0.625rem 0.75rem',
+  border: '1px solid #d1d5db',
+  borderRadius: '6px',
+  fontSize: '1rem',
+  boxSizing: 'border-box',
+};
 
-function isFormValid(form) {
-  return form.name.trim() && form.email.trim() && form.phone.trim();
+function FieldError({ message }) {
+  if (!message) return null;
+  return <p style={{ color: '#dc2626', fontSize: '0.8rem', marginTop: '0.25rem' }}>{message}</p>;
 }
 
 function LeadModal({ onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '' });
+  const [errors, setErrors] = useState({});
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const canSubmit = consent && isFormValid(form) && !loading;
+  const handleChange = (name, value) => {
+    setForm((f) => ({ ...f, [name]: value }));
+    if (errors[name]) {
+      setErrors((e) => ({ ...e, [name]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!canSubmit) return;
+    if (!consent) return;
+
+    const { valid, errors: validationErrors } = validateLeadFields(form);
+    setErrors(validationErrors);
+    if (!valid) return;
+
     setLoading(true);
     try {
-      await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          consent: true,
-          project: PROJECT_NAME,
-          source: window.location.pathname,
-          timestamp: new Date().toISOString(),
-        }),
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        source: window.location.pathname,
+        consent: true,
       });
+      setSubmitted(true);
     } catch (err) {
       console.error('Lead submission error:', err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-    setSubmitted(true);
   };
+
+  const fields = [
+    { name: 'name', label: 'Имя', type: 'text', placeholder: 'Ваше имя', autoComplete: 'name' },
+    { name: 'email', label: 'Email', type: 'email', placeholder: 'example@mail.ru', autoComplete: 'email' },
+    { name: 'phone', label: 'Телефон', type: 'tel', placeholder: '+7 (999) 123-45-67', autoComplete: 'tel' },
+  ];
 
   return (
     <div
@@ -73,6 +95,7 @@ function LeadModal({ onClose }) {
       }}>
         <button
           onClick={onClose}
+          type="button"
           style={{
             position: 'absolute', top: '1rem', right: '1rem',
             background: 'none', border: 'none', fontSize: '1.5rem',
@@ -92,28 +115,24 @@ function LeadModal({ onClose }) {
             <p style={{ color: '#666', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
               Заполните форму, и мы свяжемся с вами в течение 24 часов.
             </p>
-            <form onSubmit={handleSubmit}>
-              {[
-                { name: 'name', label: 'Имя', type: 'text', placeholder: 'Ваше имя' },
-                { name: 'email', label: 'Email', type: 'email', placeholder: 'example@mail.ru' },
-                { name: 'phone', label: 'Телефон', type: 'tel', placeholder: '+7 (___) ___-__-__' },
-              ].map(({ name, label, type, placeholder }) => (
+            <form onSubmit={handleSubmit} noValidate>
+              {fields.map(({ name, label, type, placeholder, autoComplete }) => (
                 <div key={name} style={{ marginBottom: '1rem' }}>
                   <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', fontWeight: 500 }}>
                     {label} <span style={{ color: 'red' }}>*</span>
                   </label>
                   <input
                     type={type}
-                    required
                     placeholder={placeholder}
+                    autoComplete={autoComplete}
                     value={form[name]}
-                    onChange={(e) => setForm(f => ({ ...f, [name]: e.target.value }))}
+                    onChange={(e) => handleChange(name, e.target.value)}
                     style={{
-                      width: '100%', padding: '0.625rem 0.75rem',
-                      border: '1px solid #d1d5db', borderRadius: '6px',
-                      fontSize: '1rem', boxSizing: 'border-box',
+                      ...fieldStyle,
+                      borderColor: errors[name] ? '#dc2626' : '#d1d5db',
                     }}
                   />
+                  <FieldError message={errors[name]} />
                 </div>
               ))}
               <label
@@ -129,7 +148,6 @@ function LeadModal({ onClose }) {
               >
                 <input
                   type="checkbox"
-                  required
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
                   style={{ marginTop: '0.2rem', flexShrink: 0 }}
@@ -141,16 +159,21 @@ function LeadModal({ onClose }) {
                   </Link>
                 </span>
               </label>
+              {!consent && (
+                <p style={{ color: '#dc2626', fontSize: '0.8rem', marginBottom: '1rem' }}>
+                  Необходимо согласие на обработку персональных данных
+                </p>
+              )}
               <button
                 type="submit"
-                disabled={!canSubmit}
+                disabled={loading || !consent}
                 style={{
                   width: '100%', padding: '0.75rem',
                   background: '#2563eb', color: 'white',
                   border: 'none', borderRadius: '6px',
                   fontSize: '1rem', fontWeight: 600,
-                  cursor: !canSubmit ? 'not-allowed' : 'pointer',
-                  opacity: !canSubmit ? 0.5 : 1,
+                  cursor: loading || !consent ? 'not-allowed' : 'pointer',
+                  opacity: loading || !consent ? 0.5 : 1,
                 }}
               >
                 {loading ? 'Отправляем...' : 'Оставить заявку'}

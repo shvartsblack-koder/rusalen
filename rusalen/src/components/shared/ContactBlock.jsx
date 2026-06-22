@@ -1,22 +1,74 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { Send, CheckCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+  validateLeadFields,
+  isValidMessage,
+  VALIDATION_MESSAGES,
+} from '@/lib/formValidation';
+import { submitLead } from '@/lib/submitLead';
+
+function FieldError({ message }) {
+  if (!message) return null;
+  return <p className="text-destructive text-xs mt-1">{message}</p>;
+}
 
 export default function ContactBlock() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [errors, setErrors] = useState({});
   const [status, setStatus] = useState('idle');
+
+  const updateField = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const leadErrors = validateLeadFields({
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      phoneRequired: false,
+    }).errors;
+
+    const nextErrors = { ...leadErrors };
+    if (!isValidMessage(form.message)) {
+      nextErrors.message = VALIDATION_MESSAGES.message;
+    }
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     setStatus('sending');
-    await base44.entities.ContactRequest.create(form);
-    setStatus('success');
-    setForm({ name: '', email: '', phone: '', subject: '', message: '' });
-    setTimeout(() => setStatus('idle'), 4000);
+    try {
+      const source = [
+        window.location.pathname,
+        'контактная форма',
+        form.subject && `тема: ${form.subject}`,
+        `сообщение: ${form.message.trim()}`,
+      ].filter(Boolean).join(' | ');
+
+      await submitLead({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        source,
+      });
+      setStatus('success');
+      setForm({ name: '', email: '', phone: '', subject: '', message: '' });
+      setErrors({});
+      setTimeout(() => setStatus('idle'), 4000);
+    } catch (err) {
+      console.error('Contact form error:', err);
+      setStatus('idle');
+    }
   };
 
   return (
@@ -43,44 +95,53 @@ export default function ContactBlock() {
             <p className="text-muted-foreground">Мы свяжемся с вами в ближайшее время.</p>
           </motion.div>
         ) : (
-          <form onSubmit={handleSubmit} className="glass rounded-2xl p-6 sm:p-8 space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="glass rounded-2xl p-6 sm:p-8 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                placeholder="Имя *"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                required
-                className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0"
-              />
-              <Input
-                type="email"
-                placeholder="Email *"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                required
-                className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0"
-              />
-              <Input
-                placeholder="Телефон"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0"
-              />
+              <div>
+                <Input
+                  placeholder="Имя *"
+                  value={form.name}
+                  onChange={(e) => updateField('name', e.target.value)}
+                  className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.name ? 'border-destructive' : 'border-border/50'}`}
+                />
+                <FieldError message={errors.name} />
+              </div>
+              <div>
+                <Input
+                  type="email"
+                  placeholder="Email *"
+                  value={form.email}
+                  onChange={(e) => updateField('email', e.target.value)}
+                  className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.email ? 'border-destructive' : 'border-border/50'}`}
+                />
+                <FieldError message={errors.email} />
+              </div>
+              <div>
+                <Input
+                  placeholder="Телефон"
+                  value={form.phone}
+                  onChange={(e) => updateField('phone', e.target.value)}
+                  className={`bg-transparent border-b rounded-none focus:border-primary px-0 ${errors.phone ? 'border-destructive' : 'border-border/50'}`}
+                />
+                <FieldError message={errors.phone} />
+              </div>
               <Input
                 placeholder="Тема обращения"
                 value={form.subject}
-                onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                onChange={(e) => updateField('subject', e.target.value)}
                 className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0"
               />
             </div>
-            <Textarea
-              placeholder="Сообщение *"
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-              required
-              rows={4}
-              className="bg-transparent border-b border-border/50 rounded-none focus:border-primary px-0 resize-none"
-            />
+            <div>
+              <Textarea
+                placeholder="Сообщение *"
+                value={form.message}
+                onChange={(e) => updateField('message', e.target.value)}
+                rows={4}
+                className={`bg-transparent border-b rounded-none focus:border-primary px-0 resize-none ${errors.message ? 'border-destructive' : 'border-border/50'}`}
+              />
+              <FieldError message={errors.message} />
+            </div>
             <div className="flex justify-end">
               <Button
                 type="submit"
