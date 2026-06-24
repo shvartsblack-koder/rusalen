@@ -34,6 +34,7 @@ export default function Footer() {
   const [emailError, setEmailError] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -43,6 +44,7 @@ export default function Footer() {
     }
 
     setEmailError('');
+    setSubmitError('');
     setLoading(true);
     try {
       await submitLead({
@@ -55,6 +57,7 @@ export default function Footer() {
       setEmail('');
     } catch (err) {
       console.error('Newsletter subscription error:', err);
+      setSubmitError('Не удалось подписаться. Попробуйте позже.');
     } finally {
       setLoading(false);
     }
@@ -128,6 +131,7 @@ export default function Footer() {
                     </Button>
                   </div>
                   {emailError && <p className="text-destructive text-xs">{emailError}</p>}
+                  {submitError && <p className="text-destructive text-xs">{submitError}</p>}
                 </>
               )}
             </form>

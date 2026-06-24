@@ -39,6 +39,7 @@ function LeadModal({ onClose }) {
   const [consent, setConsent] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleChange = (name, value) => {
     setForm((f) => ({ ...f, [name]: value }));
@@ -56,6 +57,7 @@ function LeadModal({ onClose }) {
     if (!valid) return;
 
     setLoading(true);
+    setSubmitError('');
     try {
       await submitLead({
         name: form.name,
@@ -67,6 +69,7 @@ function LeadModal({ onClose }) {
       setSubmitted(true);
     } catch (err) {
       console.error('Lead submission error:', err);
+      setSubmitError('Не удалось отправить заявку. Попробуйте ещё раз.');
     } finally {
       setLoading(false);
     }
@@ -163,6 +166,9 @@ function LeadModal({ onClose }) {
                 <p style={{ color: '#dc2626', fontSize: '0.8rem', marginBottom: '1rem' }}>
                   Необходимо согласие на обработку персональных данных
                 </p>
+              )}
+              {submitError && (
+                <p style={{ color: '#dc2626', fontSize: '0.8rem', marginBottom: '1rem' }}>{submitError}</p>
               )}
               <button
                 type="submit"
