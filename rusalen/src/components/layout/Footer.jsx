@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, MapPin, Phone, Mail } from 'lucide-react';
+import { Send, Phone, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { isValidEmail, VALIDATION_MESSAGES } from '@/lib/formValidation';
@@ -62,10 +62,9 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-border bg-[hsl(220,18%,5%)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Manifesto */}
-          <div className="lg:col-span-2 space-y-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12">
+          <div className="col-span-2 lg:col-span-2 space-y-3">
             <span className="text-gold-gradient font-display text-2xl font-bold">РУСАЛЕН</span>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
               Адрес: 123610, Московская область, Солнечногорский район, ГП ОПХ ЦМИС, Озеро Сенеж.
@@ -86,7 +85,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
           {footerNav.map((section) => (
             <div key={section.title}>
               <h4 className="font-mono text-xs uppercase tracking-widest text-primary mb-4">{section.title}</h4>
@@ -103,8 +101,7 @@ export default function Footer() {
           ))}
         </div>
 
-        {/* Newsletter */}
-        <div className="mt-12 pt-8 border-t border-border">
+        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <h4 className="font-display text-lg font-semibold mb-1">Подпишитесь на новости</h4>
@@ -137,11 +134,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Legal */}
         <div className="mt-8 pt-6 border-t border-border space-y-2">
           <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
             © {new Date().getFullYear()} РУСАЛЕН. Все права защищены. Данный сайт не оказывает экстренную психологическую помощь.
-            Информация, размещённая на сайте, носит информационный характер и не заменяет консультацию квалифицированного специалиста.
+            Информация, размещённая на сайте, носит информационный характер и не заменяет консультацию квалифицированного специалиста.{' '}
+            <Link to="/privacy" className="underline hover:text-foreground">Политика конфиденциальности</Link>
           </p>
           <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
             Финансовые сервисы PsyPay доступны после прохождения верификации и могут зависеть от юрисдикции, комплаенс-проверки

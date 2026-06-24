@@ -59,6 +59,14 @@ export default function Contacts() {
                   </GlassCard>
                 ))}
               </div>
+
+              {/* Map placeholder */}
+              <div className="glass rounded-xl mt-6 aspect-video flex items-center justify-center">
+                <div className="text-center">
+                  <MapPin className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">Карта офисов РУСАЛЕН</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

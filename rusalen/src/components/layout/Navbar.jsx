@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, UserCircle } from 'lucide-react';
+import { Menu, X, ChevronDown, UserCircle, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLeadModal } from '@/components/LeadModal';
 
@@ -29,6 +29,56 @@ const navItems = [
   { label: 'Psyty', path: '/psyty' },
 ];
 
+function MobileNavItem({ item, location }) {
+  const [open, setOpen] = useState(false);
+  const isActive = location.pathname.startsWith(item.path);
+
+  if (!item.children) {
+    return (
+      <Link
+        to={item.path}
+        className={`block px-4 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className={`w-full flex items-center justify-between px-4 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+      >
+        {item.label}
+        <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden bg-white/3"
+          >
+            {item.children.map((child) => (
+              <Link
+                key={child.path}
+                to={child.path}
+                className="flex items-center gap-2 pl-7 pr-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ChevronRight className="w-3 h-3 shrink-0 opacity-40" />
+                {child.label}
+              </Link>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -55,7 +105,6 @@ export default function Navbar() {
             <span className="text-gold-gradient font-display text-xl sm:text-2xl font-bold tracking-wide">РУСАЛЕН</span>
           </Link>
 
-          {/* Desktop Nav */}
           <div className="hidden xl:flex items-center gap-1">
             {navItems.map((item) => (
               <div
@@ -100,7 +149,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Login button (desktop) */}
           <button
             type="button"
             onClick={openLeadModal}
@@ -111,56 +159,39 @@ export default function Navbar() {
             Войти
           </button>
 
-          {/* Mobile toggle */}
           <button
+            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
             className="xl:hidden p-2 text-foreground"
+            aria-label="Меню"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Nav */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="xl:hidden glass mt-2 mx-4 rounded-xl overflow-hidden"
+            className="xl:hidden glass mt-1 mx-3 rounded-xl overflow-hidden"
           >
-            <div className="p-4 max-h-[70vh] overflow-y-auto space-y-1">
+            <div className="py-2 max-h-[75vh] overflow-y-auto">
               {navItems.map((item) => (
-                <div key={item.path}>
-                  <Link
-                    to={item.path}
-                    className="block px-4 py-3 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                  {item.children && (
-                    <div className="ml-4 border-l border-border pl-4 space-y-1">
-                      {item.children.map((child) => (
-                        <Link
-                          key={child.path}
-                          to={child.path}
-                          className="block px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <MobileNavItem key={item.path} item={item} location={location} />
               ))}
-              <button
-                type="button"
-                onClick={openLeadModal}
-                className="block w-full text-left px-4 py-3 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Войти
-              </button>
+              <div className="border-t border-border/40 mt-1 pt-1">
+                <button
+                  type="button"
+                  onClick={openLeadModal}
+                  className="flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors w-full"
+                >
+                  <UserCircle className="w-4 h-4" />
+                  Войти
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

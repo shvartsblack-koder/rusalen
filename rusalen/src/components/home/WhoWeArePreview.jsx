@@ -26,7 +26,7 @@ const horizons = [
 
 export default function WhoWeArePreview() {
   return (
-    <section className="py-24">
+    <section className="py-14 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <SectionHeader
           label="О центре"
