@@ -78,7 +78,7 @@ export default function HeroSection() {
             <span className="block font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-foreground/60 mb-2">
               Международный исследовательский центр
             </span>
-            <span className="text-gold-gradient font-display text-5xl sm:text-7xl lg:text-8xl font-bold block mb-2">
+            <span className="text-primary font-display text-5xl sm:text-7xl lg:text-8xl font-bold block mb-2">
               РУСАЛЕН
             </span>
             <span className="font-display text-lg sm:text-2xl lg:text-3xl font-light text-foreground/90 leading-tight block">

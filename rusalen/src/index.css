@@ -120,12 +120,11 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-/* Gold gradient text */
+/* Brand accent text — teal, matches Base44 primary */
 .text-gold-gradient {
-  background: linear-gradient(135deg, #C5A059, #E8D5A3, #C5A059);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: hsl(164 100% 45%);
+  background: none;
+  -webkit-text-fill-color: currentColor;
 }
 
 /* Neural line animation */

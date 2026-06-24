@@ -6,8 +6,6 @@ import { Button } from '@/components/ui/button';
 import { isValidEmail, VALIDATION_MESSAGES } from '@/lib/formValidation';
 import { submitLead } from '@/lib/submitLead';
 
-const logoUrl = `${import.meta.env.BASE_URL}logo.png`;
-
 const footerNav = [
   { title: 'Центр', links: [
     { label: 'Кто мы', path: '/about' },
@@ -67,10 +65,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12">
           <div className="col-span-2 lg:col-span-2 space-y-3">
-            <div className="flex items-center gap-2.5">
-              <img src={logoUrl} alt="РУСАЛЕН" className="h-9 w-9 object-contain shrink-0" />
-              <span className="text-gold-gradient font-display text-2xl font-bold">РУСАЛЕН</span>
-            </div>
+            <span className="text-primary font-display text-2xl font-bold">РУСАЛЕН</span>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
               Адрес: 123610, Московская область, Солнечногорский район, ГП ОПХ ЦМИС, Озеро Сенеж.
             </p>
