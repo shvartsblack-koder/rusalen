@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Clock, Star, ExternalLink, Search, Filter } from 'lucide-react';
+import { MapPin, Phone, Clock, Star, ExternalLink, Search, ArrowLeft } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useQuery } from '@tanstack/react-query';
@@ -17,6 +18,16 @@ const typeColors = {
   veteran_org: 'bg-amber-500/10 text-amber-700', legal: 'bg-slate-500/10 text-slate-700',
   social: 'bg-teal-500/10 text-teal-700',
 };
+
+const mockHelpCenters = [
+  { id: '1', name: 'Центр психологической помощи «Возвращение»', city: 'Москва', address: 'ул. Профсоюзная, 12', type: 'psychological', rating: 4.9, phone: '+7 (495) 123-45-67', working_hours: 'Пн–Пт 9:00–21:00', is_24h: false, accepts_emergency: true, description: 'Психологическая поддержка ветеранов СВО и членов их семей.' },
+  { id: '2', name: 'Кризисный центр «Свет»', city: 'Санкт-Петербург', address: 'Невский пр., 45', type: 'crisis', rating: 4.8, phone: '+7 (812) 234-56-78', working_hours: 'Круглосуточно', is_24h: true, accepts_emergency: true, description: 'Экстренная психологическая помощь 24/7.' },
+  { id: '3', name: 'Реабилитационный центр «Новый путь»', city: 'Казань', address: 'ул. Баумана, 8', type: 'rehabilitation', rating: 4.7, phone: '+7 (843) 345-67-89', working_hours: 'Пн–Сб 8:00–20:00', is_24h: false, accepts_emergency: false, description: 'Комплексная реабилитация лиц с ПТСР.' },
+  { id: '4', name: 'Ветеранский центр «Патриот»', city: 'Ростов-на-Дону', address: 'пр. Ворошиловский, 32', type: 'veteran_org', rating: 4.6, phone: '+7 (863) 456-78-90', working_hours: 'Пн–Пт 10:00–18:00', is_24h: false, accepts_emergency: false, description: 'Социальная адаптация и юридическая поддержка ветеранов.' },
+  { id: '5', name: 'Психиатрическая клиника «Гармония»', city: 'Екатеринбург', address: 'ул. Ленина, 50', type: 'psychiatric', rating: 4.5, phone: '+7 (343) 567-89-01', working_hours: 'Пн–Вс 8:00–22:00', is_24h: true, accepts_emergency: true, description: 'Амбулаторная и стационарная психиатрическая помощь.' },
+  { id: '6', name: 'Социальная служба «Опора»', city: 'Новосибирск', address: 'ул. Красный пр., 15', type: 'social', rating: 4.4, phone: '+7 (383) 678-90-12', working_hours: 'Пн–Пт 9:00–17:00', is_24h: false, accepts_emergency: false, description: 'Социальное сопровождение и направление к специалистам.' },
+  { id: '7', name: 'Юридический центр «Защита»', city: 'Воронеж', address: 'пр. Революции, 22', type: 'legal', rating: 4.3, phone: '+7 (473) 789-01-23', working_hours: 'Пн–Пт 10:00–19:00', is_24h: false, accepts_emergency: false, description: 'Бесплатная юридическая помощь ветеранам.' },
+];
 
 function MapPlaceholder({ centers }) {
   return (
@@ -53,10 +64,12 @@ export default function HelpMap() {
   const [filterType, setFilterType] = useState('all');
   const [selected, setSelected] = useState(null);
 
-  const { data: centers = [] } = useQuery({
+  const { data: apiCenters = [] } = useQuery({
     queryKey: ['help-centers'],
     queryFn: () => base44.entities.HelpCenter.list('-rating', 50),
   });
+
+  const centers = apiCenters.length > 0 ? apiCenters : mockHelpCenters;
 
   const filtered = centers.filter(c => {
     const matchSearch = c.name?.toLowerCase().includes(search.toLowerCase()) || c.city?.toLowerCase().includes(search.toLowerCase());
@@ -68,6 +81,10 @@ export default function HelpMap() {
     <div className="h-[calc(100vh-3.5rem)] lg:h-screen flex flex-col">
       {/* Header */}
       <div className="shrink-0 p-4 sm:p-6 border-b border-border bg-background">
+        <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
+          На главную
+        </Link>
         <h1 className="text-xl font-display font-bold text-foreground mb-4">Карта помощи</h1>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">

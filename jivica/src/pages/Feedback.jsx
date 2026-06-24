@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { MessageSquare, Send, Loader2, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { MessageSquare, Send, Loader2, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -60,6 +61,10 @@ export default function Feedback() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-2xl mx-auto">
+      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
+        <ArrowLeft className="w-4 h-4" />
+        На главную
+      </Link>
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
           <MessageSquare className="w-5 h-5 text-primary" />

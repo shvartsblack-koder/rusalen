@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Star, Clock, MessageCircle, Phone, Video, Calendar, CheckCircle } from 'lucide-react';
+import { User, Star, Clock, MessageCircle, Phone, Video, Calendar, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useLeadModal } from '@/components/LeadModal';
 
 const mockSpecialists = [
   { id: '1', name: 'Елена Михайлова', role: 'Психолог', specialization: 'ПТСР, боевая травма', experience_years: 12, rating: 4.9, reviews: 87, status: 'online', bio: 'Специалист по работе с ветеранами боевых действий. Когнитивно-поведенческая терапия.' },
@@ -19,6 +19,7 @@ const statusConfig = {
 };
 
 export default function Specialists() {
+  const { openLeadModal } = useLeadModal();
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState('all');
 
@@ -26,6 +27,10 @@ export default function Specialists() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
+      <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors">
+        <ArrowLeft className="w-4 h-4" />
+        На главную
+      </Link>
       <div className="mb-6">
         <h1 className="text-2xl font-display font-bold text-foreground mb-1">Специалисты</h1>
         <p className="text-muted-foreground">Психологи, психиатры и кризисные консультанты</p>
@@ -97,16 +102,16 @@ export default function Specialists() {
               <div className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" />{selected.rating} · {selected.reviews} отзывов</div>
             </div>
             <div className="space-y-2">
-              <Button disabled={selected.status !== 'online'} className="w-full rounded-xl" size="sm">
+              <Button type="button" onClick={openLeadModal} className="w-full rounded-xl" size="sm">
                 <MessageCircle className="w-4 h-4 mr-2" />Написать
               </Button>
-              <Button variant="outline" disabled={selected.status !== 'online'} className="w-full rounded-xl" size="sm">
+              <Button type="button" variant="outline" onClick={openLeadModal} className="w-full rounded-xl" size="sm">
                 <Phone className="w-4 h-4 mr-2" />Аудиозвонок
               </Button>
-              <Button variant="outline" disabled={selected.status !== 'online'} className="w-full rounded-xl" size="sm">
+              <Button type="button" variant="outline" onClick={openLeadModal} className="w-full rounded-xl" size="sm">
                 <Video className="w-4 h-4 mr-2" />Видеосвязь
               </Button>
-              <Button variant="outline" className="w-full rounded-xl" size="sm">
+              <Button type="button" variant="outline" onClick={openLeadModal} className="w-full rounded-xl" size="sm">
                 <Calendar className="w-4 h-4 mr-2" />Записаться
               </Button>
             </div>
