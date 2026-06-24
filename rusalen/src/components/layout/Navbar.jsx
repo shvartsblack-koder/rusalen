@@ -4,6 +4,8 @@ import { Menu, X, ChevronDown, UserCircle, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLeadModal } from '@/components/LeadModal';
 
+const logoUrl = `${import.meta.env.BASE_URL}logo.png`;
+
 const navItems = [
   { label: 'Кто мы', path: '/about', children: [
     { label: 'Команда', path: '/about/team' },
@@ -101,7 +103,8 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-t border-border/40 ${scrolled ? 'glass py-2' : 'bg-transparent py-3'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2.5">
+            <img src={logoUrl} alt="" className="h-8 w-8 sm:h-9 sm:w-9 object-contain shrink-0" />
             <span className="text-gold-gradient font-display text-xl sm:text-2xl font-bold tracking-wide">РУСАЛЕН</span>
           </Link>
 
