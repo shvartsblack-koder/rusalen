@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, UserCircle, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Logo from '@/components/shared/Logo';
 import { useLeadModal } from '@/components/LeadModal';
 
 const navItems = [
@@ -11,33 +12,44 @@ const navItems = [
     { label: 'Новости', path: '/about/news' },
     { label: 'Вакансии и конкурсы', path: '/about/vacancies' },
     { label: 'Документы', path: '/about/documents' },
-    { label: 'Контакты и филиалы', path: '/contacts' },
   ]},
-  { label: 'Научная деятельность', path: '/science', children: [
+  { label: 'Наука', path: '/science', children: [
     { label: 'Направления исследований', path: '/science/directions' },
     { label: 'Лаборатории', path: '/science/labs' },
     { label: 'Публикации', path: '/science/publications' },
     { label: 'Конференции', path: '/science/conferences' },
     { label: 'Международная деятельность', path: '/science/international' },
   ]},
-  { label: 'Образование', path: '/education' },
-  { label: 'PsyPedia', path: '/library' },
-  { label: 'PsyMedia', path: '/psymedia' },
-  { label: 'PsyTorg', path: '/psytorg' },
-  { label: 'PsyPay', path: '/psypay' },
-  { label: 'PsyTech', path: '/psytech' },
-  { label: 'Psyty', path: '/psyty' },
+  { label: 'Образование', path: '/education', children: [
+    { label: 'Фундаментальное образование', path: '/education/fundamental' },
+    { label: 'Профессиональная переподготовка', path: '/education/retraining' },
+    { label: 'Повышение квалификации', path: '/education/qualification' },
+    { label: 'Издательство', path: '/education/publishing' },
+  ]},
+  { label: 'Проекты', path: null, children: [
+    { label: 'PsyPedia', path: '/library' },
+    { label: 'PsyMedia', path: '/psymedia' },
+    { label: 'PsyTorg', path: '/psytorg' },
+    { label: 'PsyPay', path: '/psypay' },
+    { label: 'PsyTech', path: '/psytech' },
+    { label: 'Psyty', path: '/psyty' },
+    { label: 'Psyvent', path: '/psyvent' },
+  ]},
+  { label: 'Форум', path: '/forum' },
+  { label: 'Контакты', path: '/contacts' },
 ];
 
 function MobileNavItem({ item, location }) {
   const [open, setOpen] = useState(false);
-  const isActive = location.pathname.startsWith(item.path);
+  const isActive = item.path
+    ? location.pathname.startsWith(item.path)
+    : (item.children || []).some((c) => location.pathname.startsWith(c.path));
 
   if (!item.children) {
     return (
       <Link
         to={item.path}
-        className={`block px-4 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+        className={`block px-4 py-2.5 text-sm font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
       >
         {item.label}
       </Link>
@@ -47,9 +59,8 @@ function MobileNavItem({ item, location }) {
   return (
     <div>
       <button
-        type="button"
         onClick={() => setOpen(!open)}
-        className={`w-full flex items-center justify-between px-4 py-2.5 text-xs font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+        className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-mono uppercase tracking-wider transition-colors ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
       >
         {item.label}
         <ChevronDown className={`w-3.5 h-3.5 transition-transform ${open ? 'rotate-180' : ''}`} />
@@ -66,7 +77,7 @@ function MobileNavItem({ item, location }) {
               <Link
                 key={child.path}
                 to={child.path}
-                className="flex items-center gap-2 pl-7 pr-4 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-2 pl-7 pr-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ChevronRight className="w-3 h-3 shrink-0 opacity-40" />
                 {child.label}
@@ -102,29 +113,41 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <span className="text-primary font-display text-xl sm:text-2xl font-bold tracking-wide">РУСАЛЕН</span>
+            <Logo className="h-[4.5rem] sm:h-[5.5rem] max-w-[60vw] object-contain" />
           </Link>
 
-          <div className="hidden xl:flex items-center gap-1">
+          {/* Desktop Nav */}
+          <div className="hidden xl:flex items-center gap-2">
             {navItems.map((item) => (
               <div
-                key={item.path}
+                key={item.path || item.label}
                 className="relative"
-                onMouseEnter={() => item.children && setActiveDropdown(item.path)}
+                onMouseEnter={() => item.children && setActiveDropdown(item.label)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
-                <Link
-                  to={item.path}
-                  className={`px-3 py-2 text-xs font-mono uppercase tracking-wider transition-colors flex items-center gap-1 ${
-                    location.pathname.startsWith(item.path) ? 'text-primary' : 'text-foreground hover:text-primary'
-                  }`}
-                >
-                  {item.label}
-                  {item.children && <ChevronDown className="w-3 h-3" />}
-                </Link>
+                {item.children && !item.path ? (
+                  <button
+                    className={`px-3.5 py-2.5 text-sm font-mono uppercase tracking-wider transition-colors flex items-center gap-1.5 ${
+                      item.children.some((c) => location.pathname.startsWith(c.path)) ? 'text-primary' : 'text-foreground hover:text-primary'
+                    }`}
+                  >
+                    {item.label}
+                    <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <Link
+                    to={item.path}
+                    className={`px-3.5 py-2.5 text-sm font-mono uppercase tracking-wider transition-colors flex items-center gap-1.5 ${
+                      location.pathname.startsWith(item.path) ? 'text-primary' : 'text-foreground hover:text-primary'
+                    }`}
+                  >
+                    {item.label}
+                    {item.children && <ChevronDown className="w-3.5 h-3.5" />}
+                  </Link>
+                )}
 
                 <AnimatePresence>
-                  {item.children && activeDropdown === item.path && (
+                  {item.children && activeDropdown === item.label && (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -152,24 +175,23 @@ export default function Navbar() {
           <button
             type="button"
             onClick={openLeadModal}
-            className="hidden xl:flex items-center gap-1.5 px-3 py-2 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
-            title="Войти"
+            className="hidden xl:flex items-center gap-1.5 px-3.5 py-2.5 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors"
           >
             <UserCircle className="w-4 h-4" />
-            Войти
+            Связаться
           </button>
 
+          {/* Mobile toggle */}
           <button
-            type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
             className="xl:hidden p-2 text-foreground"
-            aria-label="Меню"
           >
             {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
+      {/* Mobile Nav */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -180,16 +202,16 @@ export default function Navbar() {
           >
             <div className="py-2 max-h-[75vh] overflow-y-auto">
               {navItems.map((item) => (
-                <MobileNavItem key={item.path} item={item} location={location} />
+                <MobileNavItem key={item.path || item.label} item={item} location={location} />
               ))}
               <div className="border-t border-border/40 mt-1 pt-1">
                 <button
                   type="button"
                   onClick={openLeadModal}
-                  className="flex items-center gap-2 px-4 py-2.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors w-full"
+                  className="flex w-full items-center gap-2 px-4 py-2.5 text-sm font-mono uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <UserCircle className="w-4 h-4" />
-                  Войти
+                  Связаться
                 </button>
               </div>
             </div>

@@ -1,30 +1,14 @@
-const noop = async () => null;
-const emptyList = async () => [];
-const entityStub = new Proxy({}, {
-  get: () => ({
-    list: emptyList,
-    filter: emptyList,
-    get: noop,
-    create: noop,
-    update: noop,
-    delete: noop,
-  }),
-});
+import { createClient } from '@base44/sdk';
+import { appParams } from '@/lib/app-params';
 
-export const base44 = {
-  auth: {
-    isAuthenticated: async () => false,
-    me: async () => null,
-    loginViaEmailPassword: noop,
-    logout: noop,
-    register: noop,
-    redirectToLogin: noop,
-  },
-  entities: new Proxy({}, { get: () => entityStub }),
-  integrations: {
-    Core: {
-      SendEmail: noop,
-      InvokeLLM: async () => ({ response: '' }),
-    },
-  },
-};
+const { appId, token, functionsVersion, appBaseUrl } = appParams;
+
+//Create a client with authentication required
+export const base44 = createClient({
+  appId,
+  token,
+  functionsVersion,
+  serverUrl: '',
+  requiresAuth: false,
+  appBaseUrl
+});

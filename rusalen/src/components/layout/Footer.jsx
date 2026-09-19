@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Send, Phone, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import Logo from '@/components/shared/Logo';
 import { isValidEmail, VALIDATION_MESSAGES } from '@/lib/formValidation';
 import { submitLead } from '@/lib/submitLead';
 
@@ -25,6 +26,7 @@ const footerNav = [
     { label: 'PsyPay', path: '/psypay' },
     { label: 'PsyTech', path: '/psytech' },
     { label: 'Psyty', path: '/psyty' },
+    { label: 'Psyvent', path: '/psyvent' },
     { label: 'Контакты', path: '/contacts' },
   ]},
 ];
@@ -68,7 +70,9 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12">
           <div className="col-span-2 lg:col-span-2 space-y-3">
-            <span className="text-primary font-display text-2xl font-bold">РУСАЛЕН</span>
+            <Link to="/" className="inline-block mb-1">
+              <Logo className="h-24 -ml-6" />
+            </Link>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
               Адрес: 123610, Московская область, Солнечногорский район, ГП ОПХ ЦМИС, Озеро Сенеж.
             </p>
@@ -110,30 +114,32 @@ export default function Footer() {
               <h4 className="font-display text-lg font-semibold mb-1">Подпишитесь на новости</h4>
               <p className="text-sm text-muted-foreground">Получайте актуальные новости, анонсы и исследования РУСАЛЕН</p>
             </div>
-            <form onSubmit={handleSubscribe} noValidate className="flex flex-col gap-1 w-full md:w-auto">
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-2 w-full md:w-auto">
               {subscribed ? (
                 <p className="text-sm text-accent">Вы успешно подписались!</p>
               ) : (
-                <>
-                  <div className="flex gap-2">
-                    <Input
-                      type="email"
-                      placeholder="Ваш email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (emailError) setEmailError('');
-                      }}
-                      className={`bg-secondary w-full md:w-64 ${emailError ? 'border-destructive' : 'border-border'}`}
-                    />
-                    <Button type="submit" disabled={loading} className="bg-primary text-primary-foreground hover:bg-primary/80 shrink-0">
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  {emailError && <p className="text-destructive text-xs">{emailError}</p>}
-                  {submitError && <p className="text-destructive text-xs">{submitError}</p>}
-                </>
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Ваш email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (emailError) setEmailError('');
+                    }}
+                    className="bg-secondary border-border w-full md:w-64"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-primary text-primary-foreground hover:bg-primary/80 shrink-0"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
               )}
+              {emailError && <p className="text-destructive text-xs">{emailError}</p>}
+              {submitError && <p className="text-destructive text-xs">{submitError}</p>}
             </form>
           </div>
         </div>
@@ -141,10 +147,11 @@ export default function Footer() {
         <div className="mt-8 pt-6 border-t border-border space-y-2">
           <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
             © {new Date().getFullYear()} РУСАЛЕН. Все права защищены. Данный сайт не оказывает экстренную психологическую помощь.
-            Информация, размещённая на сайте, носит информационный характер и не заменяет консультацию квалифицированного специалиста.{' '}
-            <Link to="/privacy" className="underline hover:text-foreground">Политика конфиденциальности</Link>
+            Информация, размещённая на сайте, носит информационный характер и не заменяет консультацию квалифицированного специалиста.
           </p>
           <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
+            <Link to="/privacy" className="underline hover:text-foreground">Политика конфиденциальности</Link>
+            {' · '}
             Финансовые сервисы PsyPay доступны после прохождения верификации и могут зависеть от юрисдикции, комплаенс-проверки
             и требований партнёрских финансовых организаций.
           </p>

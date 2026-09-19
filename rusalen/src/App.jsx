@@ -29,10 +29,18 @@ import PsyTech from './pages/PsyTech';
 import Accelerator from './pages/psytech/Accelerator';
 import Crowdfunding from './pages/psytech/Crowdfunding';
 import Fund from './pages/psytech/Fund';
+import Psyvent from './pages/Psyvent';
 import Psyty from './pages/Psyty';
+import Forum from './pages/Forum';
+import ForumTopic from './pages/ForumTopic';
 import Contacts from './pages/Contacts';
 import MediaLibrary from './pages/MediaLibrary';
+import Profile from './pages/Profile';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
+import ForgotPassword from '@/pages/ForgotPassword';
+import ResetPassword from '@/pages/ResetPassword';
 
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
 
@@ -44,6 +52,11 @@ function App() {
           <LeadModalProvider>
             <CookieConsent />
             <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
@@ -61,6 +74,7 @@ function App() {
                 <Route path="/science/programs" element={<Science />} />
                 <Route path="/science/partnerships" element={<Science />} />
                 <Route path="/education" element={<Education />} />
+                <Route path="/education/:category" element={<Education />} />
                 <Route path="/psypedia" element={<Navigate to="/library" replace />} />
                 <Route path="/psymedia" element={<PsyMedia />} />
                 <Route path="/psytorg" element={<PsyTorg />} />
@@ -69,11 +83,16 @@ function App() {
                 <Route path="/psytech/accelerator" element={<Accelerator />} />
                 <Route path="/psytech/crowdfunding" element={<Crowdfunding />} />
                 <Route path="/psytech/fund" element={<Fund />} />
+                <Route path="/psyvent" element={<Psyvent />} />
                 <Route path="/psyty" element={<Psyty />} />
+                <Route path="/forum" element={<Forum />} />
+                <Route path="/forum/topic/:id" element={<ForumTopic />} />
                 <Route path="/contacts" element={<Contacts />} />
                 <Route path="/library" element={<MediaLibrary />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/privacy" element={<PrivacyPolicy />} />
               </Route>
+
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </LeadModalProvider>

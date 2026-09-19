@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import PageHero from '../components/shared/PageHero';
 import SectionHeader from '../components/shared/SectionHeader';
 import GlassCard from '../components/shared/GlassCard';
@@ -18,11 +18,22 @@ const categories = [
   { value: 'publishing', label: 'Издательство Русален' },
 ];
 
+const heroByCategory = {
+  all: { title: 'Образовательные программы', description: 'Курсы повышения квалификации, профессиональная переподготовка и фундаментальное образование в сфере психологии' },
+  fundamental: { title: 'Фундаментальное образование', description: 'Системное классическое психологическое образование — от теории до исследовательской практики' },
+  retraining: { title: 'Профессиональная переподготовка', description: 'Программы переподготовки для специалистов, осваивающих психологическую профессию' },
+  qualification: { title: 'Повышение квалификации', description: 'Краткосрочные и модульные программы для действующих психологов и смежных специалистов' },
+  publishing: { title: 'Издательство Русален', description: 'Научные и образовательные издания центра: монографии, учебные пособия, переводы' },
+};
+
 const formatLabels = { online: 'Онлайн', offline: 'Очно', hybrid: 'Гибрид' };
 const levelLabels = { beginner: 'Начальный', intermediate: 'Средний', advanced: 'Продвинутый' };
 
 export default function Education() {
-  const [filters, setFilters] = useState({ category: 'all', format: 'all', level: 'all' });
+  const { category } = useParams();
+  const [filters, setFilters] = useState({ format: 'all', level: 'all' });
+  const activeCategory = categories.some((c) => c.value === category) ? category : 'all';
+  const hero = heroByCategory[activeCategory];
 
   const { data: courses = [] } = useQuery({
     queryKey: ['courses'],
@@ -31,7 +42,7 @@ export default function Education() {
   });
 
   const filtered = courses.filter((c) => {
-    if (filters.category !== 'all' && c.category !== filters.category) return false;
+    if (activeCategory !== 'all' && c.category !== activeCategory) return false;
     if (filters.format !== 'all' && c.format !== filters.format) return false;
     if (filters.level !== 'all' && c.level !== filters.level) return false;
     return c.is_published !== false;
@@ -41,8 +52,8 @@ export default function Education() {
     <div>
       <PageHero
         label="Образование"
-        title="Образовательные программы"
-        description="Курсы повышения квалификации, профессиональная переподготовка и фундаментальное образование в сфере психологии"
+        title={hero.title}
+        description={hero.description}
       />
 
       {/* Subcategory tabs */}
@@ -50,17 +61,17 @@ export default function Education() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-wrap gap-2">
             {categories.map((cat) => (
-              <button
+              <Link
                 key={cat.value}
-                onClick={() => setFilters({ ...filters, category: cat.value })}
+                to={cat.value === 'all' ? '/education' : `/education/${cat.value}`}
                 className={`px-4 py-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-colors ${
-                  filters.category === cat.value
+                  activeCategory === cat.value
                     ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground glass'
                 }`}
               >
                 {cat.label}
-              </button>
+              </Link>
             ))}
           </div>
         </div>

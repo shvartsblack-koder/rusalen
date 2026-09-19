@@ -4,23 +4,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, FlaskConical, Handshake } from 'lucide-react';
 
-const base = import.meta.env.BASE_URL;
-
 const ALL_SLIDES = [
-  `${base}hero/slide-01.png`,
-  `${base}hero/slide-02.png`,
-  `${base}hero/slide-03.png`,
-  `${base}hero/slide-04.png`,
-  `${base}hero/slide-05.png`,
-  `${base}hero/slide-06.png`,
-  `${base}hero/slide-07.png`,
-  `${base}hero/slide-08.png`,
-  `${base}hero/slide-09.png`,
-  `${base}hero/slide-10.png`,
-  `${base}hero/slide-11.png`,
-  `${base}hero/slide-12.png`,
-  `${base}hero/slide-13.png`,
-  `${base}hero/slide-14.png`,
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/2f1d133c1_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/b86538349_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/ae0b88834_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/26313c87f_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/500b9c741_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/221db283a_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/bed8440dd_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/0a479223c_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/9e2352927_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/fdac4b00a_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/f879d25a7_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/b804ef6e6_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/785d73cbe_image.png',
+  'https://media.base44.com/images/public/6a26ff9818a50c7b968c3bf4/a8683ac61_image.png',
 ];
 
 export default function HeroSection() {
@@ -39,6 +37,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
+      {/* Background slider */}
       <div className="absolute inset-0 overflow-hidden">
         <AnimatePresence mode="sync">
           <motion.img
@@ -56,14 +55,15 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-background/80 to-transparent" />
       </div>
 
+      {/* Neural overlay lines */}
       <div className="absolute inset-0 pointer-events-none">
         <svg className="w-full h-full opacity-10" viewBox="0 0 1200 800" preserveAspectRatio="none">
-          <line x1="0" y1="200" x2="600" y2="400" stroke="hsl(164,100%,45%)" strokeWidth="0.5" className="animate-pulse-glow" />
-          <line x1="300" y1="0" x2="900" y2="600" stroke="hsl(200,100%,46%)" strokeWidth="0.5" className="animate-pulse-glow" />
-          <line x1="600" y1="100" x2="1200" y2="500" stroke="hsl(164,100%,45%)" strokeWidth="0.5" className="animate-pulse-glow" />
-          <circle cx="600" cy="400" r="3" fill="hsl(164,100%,45%)" className="animate-pulse-glow" />
-          <circle cx="300" cy="250" r="2" fill="hsl(200,100%,46%)" className="animate-pulse-glow" />
-          <circle cx="900" cy="350" r="2" fill="hsl(164,100%,45%)" className="animate-pulse-glow" />
+          <line x1="0" y1="200" x2="600" y2="400" stroke="hsl(40,45%,55%)" strokeWidth="0.5" className="animate-pulse-glow" />
+          <line x1="300" y1="0" x2="900" y2="600" stroke="hsl(187,80%,53%)" strokeWidth="0.5" className="animate-pulse-glow" />
+          <line x1="600" y1="100" x2="1200" y2="500" stroke="hsl(40,45%,55%)" strokeWidth="0.5" className="animate-pulse-glow" />
+          <circle cx="600" cy="400" r="3" fill="hsl(40,45%,55%)" className="animate-pulse-glow" />
+          <circle cx="300" cy="250" r="2" fill="hsl(187,80%,53%)" className="animate-pulse-glow" />
+          <circle cx="900" cy="350" r="2" fill="hsl(40,45%,55%)" className="animate-pulse-glow" />
         </svg>
       </div>
 
@@ -78,7 +78,7 @@ export default function HeroSection() {
             <span className="block font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-foreground/60 mb-2">
               Международный исследовательский центр
             </span>
-            <span className="text-primary font-display text-5xl sm:text-7xl lg:text-8xl font-bold block mb-2">
+            <span className="text-gold-gradient font-display text-5xl sm:text-7xl lg:text-8xl font-bold block mb-2">
               РУСАЛЕН
             </span>
             <span className="font-display text-lg sm:text-2xl lg:text-3xl font-light text-foreground/90 leading-tight block">
@@ -92,7 +92,7 @@ export default function HeroSection() {
             transition={{ delay: 0.5 }}
             className="text-sm sm:text-lg text-muted-foreground leading-relaxed mb-8 sm:mb-10 max-w-2xl"
           >
-            Центр, объединяющий классический комплекс знаний о психике человека XIX–XX веков
+            Центр, объединяющий классический комплекс знаний о психике человека XIX–XX веков 
             с технологиями XXI века, цифровой средой и новыми формами человеческого сознания Homo Digital.
           </motion.p>
 

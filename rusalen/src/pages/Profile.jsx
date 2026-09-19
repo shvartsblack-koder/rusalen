@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { useFavorites } from '@/hooks/useFavorites';
 import PageHero from '../components/shared/PageHero';
 import LibraryItemCard from '../components/library/LibraryItemCard';
+import ProfileRoles from '../components/profile/ProfileRoles';
 import GlassCard from '../components/shared/GlassCard';
 import { User, BookMarked, Mail, Calendar, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
@@ -67,6 +68,12 @@ export default function Profile() {
               <p className="text-[11px] text-muted-foreground font-mono">в избранном</p>
             </div>
           </GlassCard>
+
+          {/* Roles */}
+          <ProfileRoles
+            roles={user?.roles ?? []}
+            onChange={(roles) => setUser((u) => ({ ...u, roles }))}
+          />
 
           {/* Favorites section */}
           <div>

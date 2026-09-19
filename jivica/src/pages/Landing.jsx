@@ -1,27 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useLeadModal } from '@/components/LeadModal';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Heart, MapPin, Phone, Users, ChevronRight, ArrowRight, CheckCircle, Brain, Activity, Lock, ChevronLeft, Menu, X } from 'lucide-react';
-
-const logoHero = `${import.meta.env.BASE_URL}logo-hero.png`;
-const logoFooter = `${import.meta.env.BASE_URL}logo-footer.png`;
+import { Shield, Heart, MapPin, Phone, Users, Star, ChevronRight, ArrowRight, CheckCircle, Brain, Activity, Lock, Globe, ChevronLeft, Menu, X } from 'lucide-react';
+import { useLeadModal } from '@/components/LeadModal';
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80&fit=crop',
+    image: 'https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/98c654a97_generated_image.png',
     label: 'Эмоциональный анализ',
     status: 'green',
     metrics: ['Тревога: 12%', 'Стресс: 8%', 'Усталость: 24%'],
   },
   {
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&fit=crop',
+    image: 'https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/c1dbf2fa4_generated_image.png',
+    label: 'Эмоциональный анализ',
+    status: 'green',
+    metrics: ['Тревога: 14%', 'Стресс: 10%', 'Усталость: 22%'],
+  },
+  {
+    image: 'https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/2fbcf67da_generated_image.png',
     label: 'Биометрический мониторинг',
     status: 'yellow',
     metrics: ['ЧСС: 78 уд/мин', 'HRV: 42 мс', 'SpO₂: 98%'],
   },
   {
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80&fit=crop',
+    image: 'https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/b73ded861_generated_image.png',
+    label: 'Биометрический мониторинг',
+    status: 'yellow',
+    metrics: ['ЧСС: 82 уд/мин', 'HRV: 38 мс', 'SpO₂: 97%'],
+  },
+  {
+    image: 'https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/3d98d69dd_generated_image.png',
     label: 'Кризисный скрининг',
     status: 'green',
     metrics: ['Риск: Низкий', 'Настроение: 7/10', 'Сон: 6.5 ч'],
@@ -33,10 +42,12 @@ const statusColor = { green: '#34d399', yellow: '#fbbf24', orange: '#f97316', re
 function FaceScanSlider() {
   const [current, setCurrent] = useState(0);
   const [scanY, setScanY] = useState(0);
+  const animRef = useRef(null);
   const startRef = useRef(null);
 
   useEffect(() => {
     let raf;
+    let dir = 1;
     const animate = (ts) => {
       if (!startRef.current) startRef.current = ts;
       const elapsed = (ts - startRef.current) % 3000;
@@ -58,7 +69,9 @@ function FaceScanSlider() {
 
   return (
     <div className="relative w-full max-w-xs mx-auto select-none">
+      {/* Main card */}
       <div className="relative rounded-2xl overflow-hidden border border-emerald-400/30 shadow-2xl shadow-emerald-900/40" style={{ aspectRatio: '3/4' }}>
+        {/* Face image */}
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
@@ -71,14 +84,22 @@ function FaceScanSlider() {
             className="absolute inset-0 w-full h-full object-cover object-top"
           />
         </AnimatePresence>
+
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/70" />
+
+        {/* Scan line */}
         <div
           className="absolute left-0 right-0 h-0.5 z-20 pointer-events-none"
           style={{ top: `${scanY}%`, background: 'linear-gradient(90deg, transparent, #34d399, #6ee7b7, #34d399, transparent)', boxShadow: '0 0 12px 3px rgba(52,211,153,0.5)' }}
         />
+
+        {/* Corner brackets */}
         {[['top-3 left-3', 'border-t-2 border-l-2'], ['top-3 right-3', 'border-t-2 border-r-2'], ['bottom-3 left-3', 'border-b-2 border-l-2'], ['bottom-3 right-3', 'border-b-2 border-r-2']].map(([pos, brd], i) => (
           <div key={i} className={`absolute ${pos} w-5 h-5 border-emerald-400 ${brd} z-20`} />
         ))}
+
+        {/* Facial grid dots */}
         <svg className="absolute inset-0 w-full h-full z-10 pointer-events-none opacity-40" viewBox="0 0 300 400">
           {[
             [150,120],[120,140],[180,140],[110,175],[190,175],[150,200],[130,230],[170,230],[150,260],
@@ -92,10 +113,14 @@ function FaceScanSlider() {
             <line key={`l${i}`} x1={x} y1={y} x2={arr[i+1][0]} y2={arr[i+1][1]} stroke="#34d399" strokeWidth="0.8" opacity="0.3" />
           ) : null)}
         </svg>
+
+        {/* Status badge */}
         <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1">
           <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: statusColor[slide.status] }} />
           <span className="text-xs text-white font-medium">ИИ активен</span>
         </div>
+
+        {/* Bottom info */}
         <div className="absolute bottom-0 left-0 right-0 z-30 p-4">
           <AnimatePresence mode="wait">
             <motion.div key={current} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
@@ -109,17 +134,21 @@ function FaceScanSlider() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Dots */}
       <div className="flex justify-center gap-2 mt-4">
         {slides.map((_, i) => (
-          <button key={i} type="button" onClick={() => setCurrent(i)}
+          <button key={i} onClick={() => setCurrent(i)}
             className={`w-2 h-2 rounded-full transition-all ${i === current ? 'bg-emerald-400 w-5' : 'bg-white/30'}`} />
         ))}
       </div>
-      <button type="button" onClick={() => setCurrent(c => (c - 1 + slides.length) % slides.length)}
+
+      {/* Arrows */}
+      <button onClick={() => setCurrent(c => (c - 1 + slides.length) % slides.length)}
         className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/60 transition-colors z-40">
         <ChevronLeft className="w-4 h-4" />
       </button>
-      <button type="button" onClick={() => setCurrent(c => (c + 1) % slides.length)}
+      <button onClick={() => setCurrent(c => (c + 1) % slides.length)}
         className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/60 transition-colors z-40">
         <ChevronRight className="w-4 h-4" />
       </button>
@@ -152,50 +181,46 @@ const emergencyContacts = [
   { name: 'Горячая линия Минздрава', number: '8-800-200-0-200', color: 'bg-emerald-500/10 text-emerald-700 border-emerald-200' },
 ];
 
-const navLinks = [
-  { href: '#features', label: 'О платформе', isRoute: false },
-  { href: '/help-map', label: 'Карта помощи', isRoute: true },
-  { href: '/specialists', label: 'Специалисты', isRoute: true },
-  { href: '#contacts', label: 'Контакты', isRoute: false },
-];
-
 export default function Landing() {
   const { openLeadModal } = useLeadModal();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', h);
     return () => window.removeEventListener('scroll', h);
   }, []);
 
-  const navLinkClass = scrolled ? 'text-foreground' : 'text-white/80';
-
   return (
     <div className="min-h-screen bg-background font-body">
+      {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md border-b border-border shadow-sm' : 'bg-transparent'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          {/* Spacer to align nav links with hero content */}
           <div className="hidden md:block shrink-0 mr-16 w-8" />
-          <div className={`hidden md:flex items-center gap-6 text-sm font-medium flex-1 ${navLinkClass}`}>
-            {navLinks.map((item) => (
-              item.isRoute ? (
-                <Link key={item.href} to={item.href} className="hover:opacity-70 transition-opacity">{item.label}</Link>
-              ) : (
-                <a key={item.href} href={item.href} className="hover:opacity-70 transition-opacity">{item.label}</a>
-              )
-            ))}
+
+          {/* Desktop nav links */}
+          <div className={`hidden md:flex items-center gap-6 text-sm font-medium flex-1 ${scrolled ? 'text-foreground' : 'text-white/80'}`}>
+            <a href="#features" className="hover:opacity-70 transition-opacity">О платформе</a>
+            <a href="#map" className="hover:opacity-70 transition-opacity">Карта помощи</a>
+            <a href="#specialists" className="hover:opacity-70 transition-opacity">Специалисты</a>
+            <a href="#contacts" className="hover:opacity-70 transition-opacity">Контакты</a>
           </div>
+
+          {/* Mobile: кнопки слева */}
           <div className="flex md:hidden items-center gap-2">
-            <button type="button" onClick={openLeadModal} className={`text-sm font-medium ${scrolled ? 'text-foreground' : 'text-white'} hover:opacity-70 transition-opacity px-3 py-1.5`}>Войти</button>
+            <button type="button" onClick={openLeadModal} className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</button>
             <button type="button" onClick={openLeadModal} className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</button>
           </div>
+
+          {/* Desktop: кнопки справа */}
           <div className="hidden md:flex items-center gap-2 ml-auto">
-            <button type="button" onClick={openLeadModal} className={`text-sm font-medium ${scrolled ? 'text-foreground' : 'text-white'} hover:opacity-70 transition-opacity px-3 py-1.5`}>Войти</button>
+            <button type="button" onClick={openLeadModal} className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</button>
             <button type="button" onClick={openLeadModal} className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</button>
           </div>
+
+          {/* Mobile: гамбургер справа */}
           <button
-            type="button"
             className="md:hidden ml-auto p-2 rounded-lg text-white/80 hover:text-white transition-colors"
             onClick={() => setMenuOpen(o => !o)}
             aria-label="Меню"
@@ -203,6 +228,8 @@ export default function Landing() {
             {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
+
+        {/* Mobile dropdown menu */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -212,32 +239,27 @@ export default function Landing() {
               transition={{ duration: 0.18 }}
               className={`md:hidden px-4 pb-4 pt-2 flex flex-col gap-1 ${scrolled ? 'bg-white/95 backdrop-blur-md' : 'bg-[#0b2214]/95 backdrop-blur-md'}`}
             >
-              {navLinks.map((item) => (
-                item.isRoute ? (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={`text-sm font-medium px-3 py-2.5 rounded-lg transition-colors ${scrolled ? 'text-foreground hover:bg-muted' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={`text-sm font-medium px-3 py-2.5 rounded-lg transition-colors ${scrolled ? 'text-foreground hover:bg-muted' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
-                  >
-                    {item.label}
-                  </a>
-                )
+              {[
+                { href: '#features', label: 'О платформе' },
+                { href: '#map', label: 'Карта помощи' },
+                { href: '#specialists', label: 'Специалисты' },
+                { href: '#contacts', label: 'Контакты' },
+              ].map(item => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`text-sm font-medium px-3 py-2.5 rounded-lg transition-colors ${scrolled ? 'text-foreground hover:bg-muted' : 'text-white/80 hover:text-white hover:bg-white/10'}`}
+                >
+                  {item.label}
+                </a>
               ))}
             </motion.div>
           )}
         </AnimatePresence>
       </nav>
 
+      {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-[#050f07] via-[#0b2214] to-[#122e1a]">
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#050f07]/70" />
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-14">
@@ -256,7 +278,11 @@ export default function Landing() {
                     «На все случаи жизни»
                   </p>
                 </div>
-                <img src={logoHero} alt="Живица" className="w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 object-contain flex-shrink-0" />
+                <img
+                  src="https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/a8fc8efec_pngegg.png"
+                  alt="Живица"
+                  className="w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 object-contain flex-shrink-0"
+                />
               </div>
               <p className="text-sm sm:text-base text-white/70 leading-relaxed mb-7 max-w-lg">
                 Цифровая платформа психологической поддержки, кризисного реагирования и социальной адаптации ветеранов СВО и лиц с ПТСР. Безопасно. Конфиденциально. Круглосуточно.
@@ -269,11 +295,14 @@ export default function Landing() {
                   Стать волонтёром
                 </button>
               </div>
+
             </motion.div>
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }} className="flex justify-center lg:justify-end px-6">
               <FaceScanSlider />
             </motion.div>
           </div>
+
+          {/* Stats */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {stats.map((s, i) => (
@@ -287,6 +316,7 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Features */}
       <section id="features" className="py-16 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-10">
@@ -308,6 +338,7 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Emergency Contacts */}
       <section id="contacts" className="py-16 bg-secondary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-8">
@@ -325,6 +356,8 @@ export default function Landing() {
               </motion.a>
             ))}
           </div>
+
+          {/* Partners */}
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center">
             <p className="text-sm text-muted-foreground mb-6">Партнеры платформы</p>
             <div className="flex flex-wrap justify-center gap-4">
@@ -338,6 +371,7 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* CTA */}
       <section className="py-16 bg-gradient-to-br from-[#050f07] to-[#0f2818]">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -353,12 +387,13 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="bg-[#030a05] py-12 border-t border-white/8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid sm:grid-cols-3 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <img src={logoFooter} alt="ЖИВИЦА" className="h-9 w-auto" />
+                <img src="https://media.base44.com/images/public/6a2ad240524cbc0ab3fedc84/a034ceb6a_image.png" alt="ЖИВИЦА" className="h-9 w-auto" />
               </div>
               <p className="text-white/50 text-sm leading-relaxed">ИИ-платформа психологической поддержки ветеранов СВО и лиц с ПТСР</p>
             </div>
@@ -368,8 +403,8 @@ export default function Landing() {
                 <div><button type="button" onClick={openLeadModal} className="hover:text-white/80 transition-colors">Личный кабинет</button></div>
                 <div><Link to="/help-map" className="hover:text-white/80 transition-colors">Карта помощи</Link></div>
                 <div><Link to="/specialists" className="hover:text-white/80 transition-colors">Специалисты</Link></div>
-                <div><button type="button" onClick={openLeadModal} className="hover:text-white/80 transition-colors">Сообщество</button></div>
                 <div><Link to="/feedback" className="hover:text-white/80 transition-colors">Обратная связь</Link></div>
+                <div><Link to="/privacy" className="hover:text-white/80 transition-colors">Конфиденциальность</Link></div>
               </div>
             </div>
             <div>
@@ -379,7 +414,6 @@ export default function Landing() {
                 <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> GDPR-совместимость</div>
                 <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Шифрование данных</div>
                 <div className="flex items-center gap-1.5"><CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> Многофакторная аутентификация</div>
-                <div className="pt-2"><Link to="/privacy" className="hover:text-white/80 transition-colors">Политика конфиденциальности</Link></div>
               </div>
             </div>
           </div>

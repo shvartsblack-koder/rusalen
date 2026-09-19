@@ -12,6 +12,8 @@ import HelpMap from '@/pages/HelpMap';
 import Specialists from '@/pages/Specialists';
 import Feedback from '@/pages/Feedback';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import Login from '@/pages/Login';
+import Register from '@/pages/Register';
 
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
 
@@ -29,6 +31,8 @@ function App() {
               <Route path="/specialists" element={<Specialists />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </LeadModalProvider>
