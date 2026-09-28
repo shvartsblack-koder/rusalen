@@ -48,7 +48,9 @@ jobs:
           VITE_PROJECT_NAME: jivica
 
       - name: Site guard (forms, links, favicon/OG, SEO)
-        run: node site-guard/guard.mjs verify --dist --require-webhook
+        run: |
+          node site-guard/guard.mjs spa-pages
+          node site-guard/guard.mjs verify --dist --require-webhook
         env:
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
 

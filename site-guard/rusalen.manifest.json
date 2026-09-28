@@ -33,8 +33,8 @@
     }
   },
   "baseline": {
-    "snapshotAt": "2026-09-28T12:42:09.265Z",
-    "gitCommit": "64d938b",
+    "snapshotAt": "2026-09-28T12:50:14.531Z",
+    "gitCommit": "b555d42",
     "routes": [
       "/",
       "/about",
@@ -126,7 +126,7 @@
     },
     "files": {
       ".github/workflows/base44-sync.yml": "4cdf154ec72add5cd5a0483031031521395f0549336287a569226b38c57f25dc",
-      ".github/workflows/deploy.yml": "20a26892ec7e8ce054df88227c5d40449f1fc102c411906b78a4b8917fd69f57",
+      ".github/workflows/deploy.yml": "31f6c3b69c64fb1f9763f16dd669e37bfd8e4ff7be46d4526581d663dfa25fc7",
       ".github/workflows/site-guard.yml": "1d744fa2def8e1a7631f1d078ff00665e95c32885675e0a380f4902abae8eb76",
       "rusalen/public/apple-touch-icon.png": "c3632065f95c2cbb258b19690314366b323aa13e2e8398c30107c97fc92ca4b0",
       "rusalen/public/favicon-32.png": "1faefe36c8b38dc60d11949d1c9eb0de310d10449aeeb1e1e44153a108a2e125",
@@ -136,7 +136,7 @@
       "rusalen/public/robots.txt": "87960d072c718d231cf2b31cbee33a23879481170b470602c97fa0ae79a19d72",
       "rusalen/src/lib/submitLead.js": "33a67d7f9948ba4d3cc0162ee6d81fb6b5ff703ea9c6c71c237a9abed860659a",
       "rusalen/vite.config.js": "41d4799ccb8d98ff8b4ad3dbf9394bb95b629b609456eb5ab2d0b91e285bb49d",
-      "scripts/build-vercel.sh": "ac77e428f15249592f2749d0ba43f25e15da140cd657439c9de98e66ced65636",
+      "scripts/build-vercel.sh": "c4a15f67a0050ed8027e1264db752e1acafee8d7a3f2d371f7ad0448f7e997e8",
       "vercel.json": "ba76dc17984d5cbd503e68e2645eef44649f959cec268a6c433723021eb07253"
     },
     "sitemapUrls": [
