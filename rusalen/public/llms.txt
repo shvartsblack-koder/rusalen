@@ -15,6 +15,7 @@
 - /science — research: /science/directions, /science/labs, /science/publications, /science/conferences, /science/international
 - /education — ДПО РУСАЛЕН: additional professional education for psychologists
 - /education/programs — choose a program direction; /education/visualization — curriculum map
+- /education/fundamental — fundamental education; /education/retraining — professional retraining; /education/qualification — advanced training; /education/publishing — Русален publishing
 - /psychiatry-for-psychologists — course "Psychiatry for psychologists"
 - /library — PsyPedia, media library
 - /psymedia — PsyMedia
