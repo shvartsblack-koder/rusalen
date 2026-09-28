@@ -26,7 +26,6 @@ const footerNav = [
     { label: 'PsyPay', path: '/psypay' },
     { label: 'PsyTech', path: '/psytech' },
     { label: 'Psyty', path: '/psyty' },
-    { label: 'Psyvent', path: '/psyvent' },
     { label: 'Контакты', path: '/contacts' },
   ]},
 ];

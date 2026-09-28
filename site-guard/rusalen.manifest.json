@@ -19,7 +19,9 @@
     ],
     "extraProtected": [
       "src/components/CookieConsent.jsx",
-      "src/pages/PrivacyPolicy.jsx"
+      "src/pages/PrivacyPolicy.jsx",
+      "src/lib/AuthContext.jsx",
+      "src/components/LeadModal.jsx"
     ],
     "build": {
       "commands": [
@@ -30,11 +32,37 @@
         "VITE_BASE": "/",
         "VITE_PROJECT_NAME": "rusalen"
       }
-    }
+    },
+    "requiredPatterns": [
+      {
+        "file": "src/App.jsx",
+        "text": "<LeadModalProvider",
+        "area": "forms",
+        "why": "без провайдера кнопки «Связаться» и лид-модалка перестанут работать"
+      },
+      {
+        "file": "src/App.jsx",
+        "text": "<CookieConsent",
+        "area": "seo",
+        "why": "пропал баннер согласия на cookie"
+      },
+      {
+        "file": "src/App.jsx",
+        "text": "basename={routerBasename}",
+        "area": "clicks",
+        "why": "без basename сломаются ссылки при сайте не в корне домена (/живица/)"
+      },
+      {
+        "file": "src/components/layout/Navbar.jsx",
+        "text": "openLeadModal",
+        "area": "forms",
+        "why": "пропала кнопка «Связаться» в шапке"
+      }
+    ]
   },
   "baseline": {
-    "snapshotAt": "2026-09-28T12:50:14.531Z",
-    "gitCommit": "b555d42",
+    "snapshotAt": "2026-09-28T13:43:20.617Z",
+    "gitCommit": "e3ed801",
     "routes": [
       "/",
       "/about",
@@ -46,6 +74,8 @@
       "/contacts",
       "/education",
       "/education/:category",
+      "/education/programs",
+      "/education/visualization",
       "/forgot-password",
       "/forum",
       "/forum/topic/:id",
@@ -53,6 +83,7 @@
       "/login",
       "/privacy",
       "/profile",
+      "/psychiatry-for-psychologists",
       "/psymedia",
       "/psypay",
       "/psypedia",
@@ -154,13 +185,12 @@
       "https://xn--80akrjlgn.xn--p1ai/about/vacancies",
       "https://xn--80akrjlgn.xn--p1ai/contacts",
       "https://xn--80akrjlgn.xn--p1ai/education",
-      "https://xn--80akrjlgn.xn--p1ai/education/fundamental",
-      "https://xn--80akrjlgn.xn--p1ai/education/publishing",
-      "https://xn--80akrjlgn.xn--p1ai/education/qualification",
-      "https://xn--80akrjlgn.xn--p1ai/education/retraining",
+      "https://xn--80akrjlgn.xn--p1ai/education/programs",
+      "https://xn--80akrjlgn.xn--p1ai/education/visualization",
       "https://xn--80akrjlgn.xn--p1ai/forum",
       "https://xn--80akrjlgn.xn--p1ai/library",
       "https://xn--80akrjlgn.xn--p1ai/privacy",
+      "https://xn--80akrjlgn.xn--p1ai/psychiatry-for-psychologists",
       "https://xn--80akrjlgn.xn--p1ai/psymedia",
       "https://xn--80akrjlgn.xn--p1ai/psypay",
       "https://xn--80akrjlgn.xn--p1ai/psytech",
@@ -190,7 +220,9 @@
       "- / — overview of the center",
       "- /about — who we are: /about/team, /about/mission, /about/news, /about/vacancies, /about/documents",
       "- /science — research: /science/directions, /science/labs, /science/publications, /science/conferences, /science/international",
-      "- /education — fundamental education, professional retraining, advanced training, publishing: /education/fundamental, /education/retraining, /education/qualification, /education/publishing",
+      "- /education — ДПО РУСАЛЕН: additional professional education for psychologists",
+      "- /education/programs — choose a program direction; /education/visualization — curriculum map",
+      "- /psychiatry-for-psychologists — course \"Psychiatry for psychologists\"",
       "- /library — PsyPedia, media library",
       "- /psymedia — PsyMedia",
       "- /psytorg — PsyTorg",
@@ -218,6 +250,8 @@
       "rusalen/public/robots.txt",
       "rusalen/public/sitemap.xml",
       "rusalen/src/components/CookieConsent.jsx",
+      "rusalen/src/components/LeadModal.jsx",
+      "rusalen/src/lib/AuthContext.jsx",
       "rusalen/src/lib/formValidation.js",
       "rusalen/src/lib/submitLead.js",
       "rusalen/src/pages/PrivacyPolicy.jsx",

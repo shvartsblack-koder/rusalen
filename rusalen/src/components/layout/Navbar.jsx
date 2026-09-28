@@ -21,10 +21,9 @@ const navItems = [
     { label: 'Международная деятельность', path: '/science/international' },
   ]},
   { label: 'Образование', path: '/education', children: [
-    { label: 'Фундаментальное образование', path: '/education/fundamental' },
-    { label: 'Профессиональная переподготовка', path: '/education/retraining' },
-    { label: 'Повышение квалификации', path: '/education/qualification' },
-    { label: 'Издательство', path: '/education/publishing' },
+    { label: 'ДПО РУСАЛЕН', path: '/education' },
+    { label: 'Выбрать направление', path: '/education/programs' },
+    { label: 'Психиатрия для психологов', path: '/psychiatry-for-psychologists' },
   ]},
   { label: 'Проекты', path: null, children: [
     { label: 'PsyPedia', path: '/library' },

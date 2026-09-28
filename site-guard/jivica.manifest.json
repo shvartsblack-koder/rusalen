@@ -18,7 +18,9 @@
     ],
     "extraProtected": [
       "src/components/CookieConsent.jsx",
-      "src/pages/PrivacyPolicy.jsx"
+      "src/pages/PrivacyPolicy.jsx",
+      "src/lib/AuthContext.jsx",
+      "src/components/LeadModal.jsx"
     ],
     "build": {
       "commands": [
@@ -29,11 +31,37 @@
         "VITE_BASE": "/живица/",
         "VITE_PROJECT_NAME": "jivica"
       }
-    }
+    },
+    "requiredPatterns": [
+      {
+        "file": "src/App.jsx",
+        "text": "<LeadModalProvider",
+        "area": "forms",
+        "why": "без провайдера кнопки «Связаться» и лид-модалка перестанут работать"
+      },
+      {
+        "file": "src/App.jsx",
+        "text": "<CookieConsent",
+        "area": "seo",
+        "why": "пропал баннер согласия на cookie"
+      },
+      {
+        "file": "src/App.jsx",
+        "text": "basename={routerBasename}",
+        "area": "clicks",
+        "why": "без basename сломаются ссылки при сайте не в корне домена (/живица/)"
+      },
+      {
+        "file": "src/pages/Landing.jsx",
+        "text": "openLeadModal",
+        "area": "forms",
+        "why": "пропали кнопки заявки на лендинге"
+      }
+    ]
   },
   "baseline": {
-    "snapshotAt": "2026-09-28T12:50:14.482Z",
-    "gitCommit": "b555d42",
+    "snapshotAt": "2026-09-28T13:43:20.571Z",
+    "gitCommit": "e3ed801",
     "routes": [
       "/",
       "/feedback",
@@ -124,6 +152,8 @@
       "jivica/public/favicon.png",
       "jivica/public/og-jivica.png",
       "jivica/src/components/CookieConsent.jsx",
+      "jivica/src/components/LeadModal.jsx",
+      "jivica/src/lib/AuthContext.jsx",
       "jivica/src/lib/formValidation.js",
       "jivica/src/lib/submitLead.js",
       "jivica/src/pages/PrivacyPolicy.jsx",

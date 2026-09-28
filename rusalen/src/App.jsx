@@ -22,6 +22,9 @@ import Publications from './pages/science/Publications';
 import Conferences from './pages/science/Conferences';
 import International from './pages/science/International';
 import Education from './pages/Education';
+import EducationPrograms from './pages/EducationPrograms';
+import EducationVisualization from './pages/EducationVisualization';
+import PsychiatryForPsychologists from './pages/PsychiatryForPsychologists';
 import PsyMedia from './pages/PsyMedia';
 import PsyTorg from './pages/PsyTorg';
 import PsyPay from './pages/PsyPay';
@@ -74,7 +77,10 @@ function App() {
                 <Route path="/science/programs" element={<Science />} />
                 <Route path="/science/partnerships" element={<Science />} />
                 <Route path="/education" element={<Education />} />
-                <Route path="/education/:category" element={<Education />} />
+                <Route path="/education/programs" element={<EducationPrograms />} />
+                <Route path="/education/visualization" element={<EducationVisualization />} />
+                <Route path="/education/:category" element={<Navigate to="/education" replace />} />
+                <Route path="/psychiatry-for-psychologists" element={<PsychiatryForPsychologists />} />
                 <Route path="/psypedia" element={<Navigate to="/library" replace />} />
                 <Route path="/psymedia" element={<PsyMedia />} />
                 <Route path="/psytorg" element={<PsyTorg />} />

@@ -13,7 +13,9 @@
 - / — overview of the center
 - /about — who we are: /about/team, /about/mission, /about/news, /about/vacancies, /about/documents
 - /science — research: /science/directions, /science/labs, /science/publications, /science/conferences, /science/international
-- /education — fundamental education, professional retraining, advanced training, publishing: /education/fundamental, /education/retraining, /education/qualification, /education/publishing
+- /education — ДПО РУСАЛЕН: additional professional education for psychologists
+- /education/programs — choose a program direction; /education/visualization — curriculum map
+- /psychiatry-for-psychologists — course "Psychiatry for psychologists"
 - /library — PsyPedia, media library
 - /psymedia — PsyMedia
 - /psytorg — PsyTorg
