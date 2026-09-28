@@ -14,6 +14,10 @@
   <url><loc>https://xn--80akrjlgn.xn--p1ai/science/conferences</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://xn--80akrjlgn.xn--p1ai/science/international</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://xn--80akrjlgn.xn--p1ai/education</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://xn--80akrjlgn.xn--p1ai/education/fundamental</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://xn--80akrjlgn.xn--p1ai/education/retraining</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://xn--80akrjlgn.xn--p1ai/education/qualification</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://xn--80akrjlgn.xn--p1ai/education/publishing</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://xn--80akrjlgn.xn--p1ai/education/programs</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
   <url><loc>https://xn--80akrjlgn.xn--p1ai/education/visualization</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
   <url><loc>https://xn--80akrjlgn.xn--p1ai/psychiatry-for-psychologists</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
