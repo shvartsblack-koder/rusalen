@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Heart, MapPin, Phone, Users, Star, ChevronRight, ArrowRight, CheckCircle, Brain, Activity, Lock, Globe, ChevronLeft, Menu, X } from 'lucide-react';
+import { useLeadModal } from '@/components/LeadModal';
 
 const slides = [
   {
@@ -181,6 +182,7 @@ const emergencyContacts = [
 ];
 
 export default function Landing() {
+  const { openLeadModal } = useLeadModal();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
@@ -207,14 +209,14 @@ export default function Landing() {
 
           {/* Mobile: кнопки слева */}
           <div className="flex md:hidden items-center gap-2">
-            <Link to="/login" className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</Link>
-            <Link to="/register" className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</Link>
+            <button type="button" onClick={openLeadModal} className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</button>
+            <button type="button" onClick={openLeadModal} className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</button>
           </div>
 
           {/* Desktop: кнопки справа */}
           <div className="hidden md:flex items-center gap-2 ml-auto">
-            <Link to="/login" className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</Link>
-            <Link to="/register" className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</Link>
+            <button type="button" onClick={openLeadModal} className={`text-sm font-medium border border-white/80 ${scrolled ? 'text-foreground border-foreground/30' : 'text-white'} hover:opacity-70 transition-opacity px-4 py-1.5 rounded-lg`}>Войти</button>
+            <button type="button" onClick={openLeadModal} className="bg-primary text-white text-sm font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">Начать</button>
           </div>
 
           {/* Mobile: гамбургер справа */}
@@ -286,12 +288,12 @@ export default function Landing() {
                 Цифровая платформа психологической поддержки, кризисного реагирования и социальной адаптации ветеранов СВО и лиц с ПТСР. Безопасно. Конфиденциально. Круглосуточно.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link to="/register" className="inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-blue-900/40 text-sm">
+                <button type="button" onClick={openLeadModal} className="inline-flex items-center justify-center gap-2 bg-primary text-white font-semibold px-6 py-3 rounded-xl hover:bg-primary/90 transition-all shadow-lg shadow-blue-900/40 text-sm">
                   Получить помощь <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link to="/register?role=psychologist" className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all text-sm">
+                </button>
+                <button type="button" onClick={openLeadModal} className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all text-sm">
                   Стать волонтёром
-                </Link>
+                </button>
               </div>
 
             </motion.div>
@@ -378,9 +380,9 @@ export default function Landing() {
             <p className="text-white/70 text-base mb-7 leading-relaxed">
               Тысячи ветеранов СВО уже получают поддержку через платформу «ЖИВИЦА». Сделайте первый шаг — это бесплатно и конфиденциально.
             </p>
-            <Link to="/register" className="inline-flex items-center gap-2 bg-white text-[#0d1b3e] font-bold text-lg px-10 py-4 rounded-2xl hover:bg-blue-50 transition-colors shadow-xl">
+            <button type="button" onClick={openLeadModal} className="inline-flex items-center gap-2 bg-white text-[#0d1b3e] font-bold text-lg px-10 py-4 rounded-2xl hover:bg-blue-50 transition-colors shadow-xl">
               Получить помощь сейчас <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
           </motion.div>
         </div>
       </section>
@@ -398,10 +400,11 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold text-white/80 mb-3 text-sm">Платформа</h4>
               <div className="space-y-2 text-sm text-white/50">
-                <div><Link to="/dashboard" className="hover:text-white/80 transition-colors">Личный кабинет</Link></div>
+                <div><button type="button" onClick={openLeadModal} className="hover:text-white/80 transition-colors">Личный кабинет</button></div>
                 <div><Link to="/help-map" className="hover:text-white/80 transition-colors">Карта помощи</Link></div>
                 <div><Link to="/specialists" className="hover:text-white/80 transition-colors">Специалисты</Link></div>
-                <div><Link to="/community" className="hover:text-white/80 transition-colors">Сообщество</Link></div>
+                <div><Link to="/feedback" className="hover:text-white/80 transition-colors">Обратная связь</Link></div>
+                <div><Link to="/privacy" className="hover:text-white/80 transition-colors">Конфиденциальность</Link></div>
               </div>
             </div>
             <div>
