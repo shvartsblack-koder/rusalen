@@ -1,11 +1,14 @@
 ## Применение архива Base44: rusalen
 
-Архив: rusalen.zip, файлов: 200. Режим: трёхстороннее слияние.
+Архив: rusalen.zip, файлов: 201. Режим: трёхстороннее слияние.
 
 ### Защищённые файлы: в архиве другая версия, оставлена наша (перенести полезное вручную) (3)
 - rusalen/index.html
 - rusalen/src/lib/AuthContext.jsx
 - rusalen/vite.config.js
+
+### Добавлено из Base44 (1)
+- rusalen/public/education_structure.json
 
 ### Оставлена наша версия (Base44 файл не менял) (6)
 - rusalen/src/App.jsx
