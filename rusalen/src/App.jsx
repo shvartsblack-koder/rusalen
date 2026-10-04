@@ -24,14 +24,9 @@ import International from './pages/science/International';
 import Education from './pages/Education';
 import EducationPrograms from './pages/EducationPrograms';
 import EducationVisualization from './pages/EducationVisualization';
-<<<<<<< наша версия
-import PsychiatryForPsychologists from './pages/PsychiatryForPsychologists';
-import EducationCategory from './pages/EducationCategory';
-=======
 import PsychiatryProgram from './pages/education/PsychiatryProgram';
 import EducationTeam from './pages/education/Team';
-import PsyPedia from './pages/PsyPedia';
->>>>>>> новый Base44
+import EducationCategory from './pages/EducationCategory';
 import PsyMedia from './pages/PsyMedia';
 import PsyTorg from './pages/PsyTorg';
 import PsyPay from './pages/PsyPay';
@@ -52,84 +47,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import ResetPassword from '@/pages/ResetPassword';
 
-<<<<<<< наша версия
 const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
-=======
-const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
-
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-          <span className="text-gold-gradient font-display text-xl font-bold">РУСАЛЕН</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/about/team" element={<Team />} />
-        <Route path="/about/mission" element={<Mission />} />
-        <Route path="/about/news" element={<News />} />
-        <Route path="/about/vacancies" element={<Vacancies />} />
-        <Route path="/about/documents" element={<Documents />} />
-        <Route path="/science" element={<Science />} />
-        <Route path="/science/directions" element={<Directions />} />
-        <Route path="/science/labs" element={<Labs />} />
-        <Route path="/science/publications" element={<Publications />} />
-        <Route path="/science/conferences" element={<Conferences />} />
-        <Route path="/science/international" element={<International />} />
-        <Route path="/science/programs" element={<Science />} />
-        <Route path="/science/partnerships" element={<Science />} />
-        <Route path="/education" element={<Education />} />
-        <Route path="/education/programs" element={<EducationPrograms />} />
-        <Route path="/education/programs/psychiatry-for-psychologists" element={<PsychiatryProgram />} />
-        <Route path="/education/team" element={<EducationTeam />} />
-        <Route path="/education/visualization" element={<EducationVisualization />} />
-        <Route path="/education/:category" element={<Navigate to="/education" replace />} />
-        <Route path="/psychiatry-for-psychologists" element={<Navigate to="/education/programs/psychiatry-for-psychologists" replace />} />
-        <Route path="/psypedia" element={<Navigate to="/library" replace />} />
-        <Route path="/psymedia" element={<PsyMedia />} />
-        <Route path="/psytorg" element={<PsyTorg />} />
-        <Route path="/psypay" element={<PsyPay />} />
-        <Route path="/psytech" element={<PsyTech />} />
-        <Route path="/psytech/accelerator" element={<Accelerator />} />
-        <Route path="/psytech/crowdfunding" element={<Crowdfunding />} />
-        <Route path="/psytech/fund" element={<Fund />} />
-        <Route path="/psyvent" element={<Psyvent />} />
-        <Route path="/psyty" element={<Psyty />} />
-        <Route path="/forum" element={<Forum />} />
-        <Route path="/forum/topic/:id" element={<ForumTopic />} />
-        <Route path="/contacts" element={<Contacts />} />
-        <Route path="/library" element={<MediaLibrary />} />
-        <Route path="/profile" element={<Profile />} />
-      </Route>
-
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
-  );
-};
->>>>>>> новый Base44
 
 function App() {
   return (
@@ -162,9 +80,11 @@ function App() {
                 <Route path="/science/partnerships" element={<Science />} />
                 <Route path="/education" element={<Education />} />
                 <Route path="/education/programs" element={<EducationPrograms />} />
+                <Route path="/education/programs/psychiatry-for-psychologists" element={<PsychiatryProgram />} />
+                <Route path="/education/team" element={<EducationTeam />} />
                 <Route path="/education/visualization" element={<EducationVisualization />} />
                 <Route path="/education/:category" element={<EducationCategory />} />
-                <Route path="/psychiatry-for-psychologists" element={<PsychiatryForPsychologists />} />
+                <Route path="/psychiatry-for-psychologists" element={<Navigate to="/education/programs/psychiatry-for-psychologists" replace />} />
                 <Route path="/psypedia" element={<Navigate to="/library" replace />} />
                 <Route path="/psymedia" element={<PsyMedia />} />
                 <Route path="/psytorg" element={<PsyTorg />} />
