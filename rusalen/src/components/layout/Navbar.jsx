@@ -22,8 +22,10 @@ const navItems = [
   ]},
   { label: 'Образование', path: '/education', children: [
     { label: 'ДПО РУСАЛЕН', path: '/education' },
-    { label: 'Выбрать направление', path: '/education/programs' },
-    { label: 'Психиатрия для психологов', path: '/psychiatry-for-psychologists' },
+    { label: 'Программы', path: '/education/programs' },
+    { label: 'Как устроено обучение', path: '/education#how-we-teach' },
+    { label: 'Преподаватели', path: '/education/team' },
+    { label: 'Связи программ', path: '/education/visualization' },
   ]},
   { label: 'Проекты', path: null, children: [
     { label: 'PsyPedia', path: '/library' },

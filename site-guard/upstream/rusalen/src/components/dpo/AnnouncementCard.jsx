@@ -2,7 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Clock, Award } from 'lucide-react';
+import { hoursTextFor, documentLineFor } from '@/components/education/educationModel';
 import { mailtoHref } from '@/lib/mailto';
 
 export default function AnnouncementCard({ item, delay = 0 }) {
@@ -24,7 +25,15 @@ export default function AnnouncementCard({ item, delay = 0 }) {
       {item.subtitle && (
         <p className="text-xs text-primary/90 mb-2">{item.subtitle}</p>
       )}
-      <p className="text-xs text-muted-foreground leading-relaxed mb-4">{item.description}</p>
+      <p className="text-xs text-muted-foreground leading-relaxed mb-3">{item.description}</p>
+      <p className="text-xs text-muted-foreground/80 flex items-center gap-1.5 mb-1">
+        <Clock className="w-3.5 h-3.5 text-primary/80" aria-hidden="true" />
+        {hoursTextFor(item)}
+      </p>
+      <p className="text-xs text-muted-foreground/70 flex items-center gap-1.5 mb-4">
+        <Award className="w-3.5 h-3.5 text-primary/70" aria-hidden="true" />
+        {documentLineFor(item)}
+      </p>
       <Collapsible className="mb-4">
         <CollapsibleTrigger className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground hover:text-primary transition-colors group">
           О направлении
