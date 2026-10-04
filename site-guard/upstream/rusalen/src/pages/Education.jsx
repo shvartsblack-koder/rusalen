@@ -1,19 +1,17 @@
 import React, { useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
-import DpoHero from '@/components/dpo/DpoHero';
-import ModularScheme from '@/components/dpo/ModularScheme';
-import MissionSection from '@/components/dpo/MissionSection';
-import TrajectoriesSection from '@/components/dpo/TrajectoriesSection';
-import BlocksSection from '@/components/dpo/BlocksSection';
-import ValuesSection from '@/components/dpo/ValuesSection';
-import CommunitySection from '@/components/dpo/CommunitySection';
-import OrganizationsSection from '@/components/dpo/OrganizationsSection';
-import DpoFaq from '@/components/dpo/DpoFaq';
-import DpoContacts from '@/components/dpo/DpoContacts';
+import EduHero from '@/components/education/EduHero';
+import StudyNowSection from '@/components/education/StudyNowSection';
+import HowWeTeach from '@/components/education/HowWeTeach';
+import DirectionsSection from '@/components/education/DirectionsSection';
+import TeachersPreview from '@/components/education/TeachersPreview';
+import EnvironmentSection from '@/components/education/EnvironmentSection';
+import ExperimentalProgramsSection from '@/components/education/ExperimentalProgramsSection';
+import NextStepSection from '@/components/education/NextStepSection';
 
 const PAGE_TITLE = 'ДПО РУСАЛЕН — программы для психологов и профессиональное развитие';
 const PAGE_DESCRIPTION =
-  'Психиатрия для психологов, анонсы направлений ДПО и модульное обучение. Клиническое мышление, психологические методы и психофизиология в РУСАЛЕН';
+  'Клиническая грамотность, психотерапевтические методы, психофизиология и профильные специализации в связанной системе подготовки психолога. Программы ДПО РУСАЛЕН.';
 
 export default function Education() {
   useEffect(() => {
@@ -38,16 +36,14 @@ export default function Education() {
   return (
     <MotionConfig reducedMotion="user">
       <div>
-        <DpoHero />
-        <ModularScheme />
-        <MissionSection />
-        <TrajectoriesSection />
-        <BlocksSection />
-        <ValuesSection />
-        <CommunitySection />
-        <OrganizationsSection />
-        <DpoFaq />
-        <DpoContacts />
+        <EduHero />
+        <StudyNowSection />
+        <HowWeTeach />
+        <DirectionsSection />
+        <TeachersPreview />
+        <EnvironmentSection />
+        <ExperimentalProgramsSection />
+        <NextStepSection />
       </div>
     </MotionConfig>
   );

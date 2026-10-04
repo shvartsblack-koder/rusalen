@@ -9,7 +9,7 @@
 //     кластеры уходят назад и гаснут. Всё остаётся настоящим 3D:
 //     вращение, наклон, масштаб работают в любом состоянии.
 // ============================================================
-import { C, nodes, edges, programs, programToBubble, bubbles } from './curriculumData';
+import { C, nodes, edges, programs, programToBubble, bubbles, programKeyByMatrixId } from './curriculumData';
 import { schemePrograms, schemeZones, schemeRelations, schemeRelationTypes } from './programSchemeData';
 
 const CLINICAL = 'КЛИНИЧЕСКИЕ АСПЕКТЫ';
@@ -40,8 +40,9 @@ export function initCurriculumMap() {
   let activeProgram = null;     // выбранный маршрут (подсветка + прогресс)
   let densityMode = 'readable', showLabels = true, showBubbles = true;
   let focusOnly = false, schemeMode = false;
+  let schemeScale = 1; // масштаб 2D-сборки (колесо мыши)
   let schemeSelected = null, schemeHover = null; // выбранная программа в 2D-сборке
-  let done = new Set(JSON.parse(localStorage.getItem('rusalenDone') || '[]'));
+
 
   const disposers = [];
   const on = (el, ev, fn, opt) => { el.addEventListener(ev, fn, opt); disposers.push(() => el.removeEventListener(ev, fn, opt)); };
@@ -319,8 +320,13 @@ export function initCurriculumMap() {
   // ---------- 2D-сборка программ (матрица v11 · визуальные связи) ----------
   function renderScheme() {
     const BW = 174, BH = 74; // размеры карточки программы (как в HTML-примере)
-    const s = Math.min((W - 24) / 1195, (H - 40) / 660, 1.5);
-    const ox = (W - 1195 * s) / 2 + panX, oy = (H - 660 * s) / 2 + panY;
+    // Не даём сборке сжиматься до нечитаемости: минимальный масштаб,
+    // остальное смотрится сдвигом (тянуть) и масштабом (колесо).
+    const fitS = Math.min((W - 24) / 1195, (H - 40) / 660, 1.5);
+    const s = Math.max(0.62, fitS) * schemeScale;
+    const ox = (W - 1195 * s) / 2 + panX;
+    let oy = (H - 660 * s) / 2 + panY;
+    if (660 * s > H - 24) oy = 12 + panY; // высоко — прижимаем к верху, низ доступен сдвигом
     const X = (v) => ox + v * s, Y = (v) => oy + v * s;
     const fs = Math.max(8, 11 * s), fsS = Math.max(7, 9 * s);
     ctx.textBaseline = 'alphabetic';
@@ -330,20 +336,32 @@ export function initCurriculumMap() {
       ctx.fillStyle = 'rgba(79,140,210,.045)'; ctx.fill();
       ctx.strokeStyle = 'rgba(79,140,210,.32)'; ctx.lineWidth = 1.2; ctx.stroke();
       ctx.fillStyle = 'rgba(140,170,210,.72)'; ctx.font = `700 ${Math.max(8, 10 * s)}px system-ui`; ctx.textAlign = 'left';
-      ctx.fillText(z.title, X(z.x + 14), Y(z.y + 22));
+      // заголовок зоны не должен вылезать за её рамку и перекрывать соседние блоки
+      const maxW = z.w * s - 28;
+      let zTitle = z.title;
+      if (ctx.measureText(zTitle).width > maxW) {
+        const keep = Math.max(4, Math.floor((maxW / ctx.measureText(zTitle).width) * zTitle.length) - 1);
+        zTitle = zTitle.slice(0, keep) + '…';
+      }
+      ctx.fillText(zTitle, X(z.x + 14), Y(z.y + 22));
     }
     // связи между программами
     const byId = {}; schemePrograms.forEach((p) => { byId[p.id] = p; });
     for (const r of schemeRelations) {
       const a = byId[r.from], b = byId[r.to];
       const meta = schemeRelationTypes[r.type];
-      const sx = X(a.x + BW), sy = Y(a.y + BH / 2), tx = X(b.x), ty = Y(b.y + BH / 2);
+      // карточки друг под другом (ступени I → II) — вертикальный коннектор
+      const stacked = Math.abs(a.x - b.x) < 1 && b.y > a.y;
+      const sx = stacked ? X(a.x + BW / 2) : X(a.x + BW);
+      const sy = stacked ? Y(a.y + BH) : Y(a.y + BH / 2);
+      const tx = stacked ? sx : X(b.x);
+      const ty = stacked ? Y(b.y) : Y(b.y + BH / 2);
       const mx = (sx + tx) / 2;
       const hot = schemeSelected && (r.from === schemeSelected || r.to === schemeSelected);
       ctx.globalAlpha = schemeSelected ? (hot ? 1 : .13) : .8;
       ctx.strokeStyle = meta.color; ctx.lineWidth = hot ? 2.6 : 1.8;
       ctx.beginPath(); ctx.moveTo(sx, sy); ctx.bezierCurveTo(mx, sy, mx, ty, tx, ty); ctx.stroke();
-      const ang = Math.atan2(0, tx - mx), len = 7;
+      const ang = Math.atan2(ty - sy, tx - sx), len = 7;
       ctx.fillStyle = meta.color; ctx.beginPath();
       ctx.moveTo(tx, ty);
       ctx.lineTo(tx - Math.cos(ang - .45) * len, ty - Math.sin(ang - .45) * len);
@@ -361,13 +379,19 @@ export function initCurriculumMap() {
       ctx.fillStyle = p.format === 'ПК' ? 'rgba(79,168,255,.13)' : 'rgba(255,155,82,.11)'; ctx.fill();
       ctx.strokeStyle = sel ? '#fff' : col; ctx.lineWidth = sel ? 2.2 : (hov ? 1.8 : 1.2); ctx.stroke();
       if (sel) { roundRect(x, y, w, h, 10); ctx.strokeStyle = col; ctx.globalAlpha = .55; ctx.lineWidth = 4; ctx.stroke(); ctx.globalAlpha = 1; }
+      // все внутренние отступы масштабируются вместе с карточкой, иначе текст
+      // при уменьшении масштаба вылезает за рамку и перекрывает соседнюю карточку
+      const pad = 9 * s, topBase = 6 * s + fsS;
       ctx.font = `800 ${fsS}px system-ui`; ctx.textAlign = 'left';
-      ctx.fillStyle = col; ctx.fillText(p.format, x + 9, y + 6 + fsS);
+      ctx.fillStyle = col; ctx.fillText(p.format, x + pad, y + topBase);
       ctx.font = `600 ${Math.max(6.5, 8 * s)}px system-ui`; ctx.textAlign = 'right';
-      ctx.fillStyle = 'rgba(230,240,255,.55)'; ctx.fillText(`${p.hours.total} ч`, x + w - 8, y + 6 + fsS);
-      const lines = wrapText(p.short || p.name, Math.max(10, Math.floor((w - 18) / (fs * .52))), 3);
+      ctx.fillStyle = 'rgba(230,240,255,.55)'; ctx.fillText(p.hours.total > 0 ? `${p.hours.total} ч` : '— ч', x + w - pad, y + topBase);
+      const base0 = topBase + 3 * s + fs; // первая строка названия
+      const lh = fs + 3 * s;              // межстрочный интервал
+      const maxLines = Math.max(1, Math.min(3, Math.floor((h - 5 * s - base0) / lh) + 1));
+      const lines = wrapText(p.short || p.name, Math.max(8, Math.floor((w - 2 * pad) / (fs * .52))), maxLines);
       ctx.font = `700 ${fs}px system-ui`; ctx.textAlign = 'left'; ctx.fillStyle = '#eaf2ff';
-      lines.forEach((t, i) => ctx.fillText(t, x + 9, y + 30 + i * (fs + 3)));
+      lines.forEach((t, i) => ctx.fillText(t, x + pad, y + base0 + i * lh));
     }
     // легенда типов связей — верхний правый угол
     ctx.font = `600 ${Math.max(8, 9.5 * s)}px system-ui`; ctx.textAlign = 'left';
@@ -476,18 +500,14 @@ export function initCurriculumMap() {
     for (const { n, p, r } of drawnNodes) {
       const alpha = nodeAlpha(n);
       const col = C[n.group];
-      const selected = n.id === selectedId, hovered = n.id === hoverId, completed = done.has(n.id);
+      const selected = n.id === selectedId, hovered = n.id === hoverId;
       ctx.globalAlpha = alpha;
       if (n.exam) { ctx.beginPath(); ctx.arc(p.x, p.y, r + 5, 0, Math.PI * 2); ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2; ctx.stroke(); }
       if (n.shared) { ctx.beginPath(); ctx.arc(p.x, p.y, r + 2.5, 0, Math.PI * 2); ctx.strokeStyle = '#67e8f9'; ctx.lineWidth = 1.5; ctx.stroke(); }
       ctx.beginPath(); ctx.arc(p.x, p.y, r + (selected ? 4 : 0), 0, Math.PI * 2);
-      ctx.fillStyle = completed ? '#22c55e' : col; ctx.fill();
+      ctx.fillStyle = col; ctx.fill();
       ctx.strokeStyle = selected ? '#fff' : rgba('#ffffff', hovered ? .8 : .3);
       ctx.lineWidth = selected ? 3 : 1.2; ctx.stroke();
-      if (completed) {
-        ctx.font = `700 ${Math.max(8, 11 * p.s + 5)}px system-ui`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#052e16'; ctx.fillText('✓', p.x, p.y + .5);
-      }
       n._screen = { x: p.x, y: p.y, r: r + 8, z: p.z };
     }
     // подписи — отдельным проходом поверх всех узлов, с избеганием наложений
@@ -522,7 +542,6 @@ export function initCurriculumMap() {
       });
     }
     ctx.restore();
-    updateProgress();
   }
 
   function drawOverviewBubble(b, c, rx, ry) {
@@ -684,7 +703,11 @@ export function initCurriculumMap() {
   });
   on(canvas, 'wheel', (e) => {
     e.preventDefault();
-    if (schemeMode) return;
+    if (schemeMode) {
+      schemeScale *= e.deltaY > 0 ? .9 : 1.1;
+      schemeScale = Math.max(.5, Math.min(2.2, schemeScale));
+      render(); return;
+    }
     zoom *= e.deltaY > 0 ? .9 : 1.1;
     zoom = Math.max(.25, Math.min(2.5, zoom));
     render();
@@ -696,28 +719,33 @@ export function initCurriculumMap() {
     const hoursNote = p.hours.total > 0 ? ` · ${p.hours.total} ч (контакт ${p.hours.contact}, СРС ${p.hours.self}).` : ' · часы уточняются.';
     nodeMetaEl.textContent = (p.format === 'ПК' ? 'Программа повышения квалификации' : 'Программа профессиональной переподготовки')
       + hoursNote + '\n' + p.goal;
-    const ins = schemeRelations.filter((r) => r.to === p.id);
-    const outs = schemeRelations.filter((r) => r.from === p.id);
     const tags = $('cmProgramTags'); tags.innerHTML = '';
-    [p.format, `${p.hours.total} ч`, `входящих связей: ${ins.length}`, `исходящих: ${outs.length}`].forEach((t) => {
+    [p.format, p.hours.total > 0 ? `${p.hours.total} ч` : 'часы уточняются'].forEach((t) => {
       const s = document.createElement('span'); s.className = 'cm-tag'; s.textContent = t; tags.appendChild(s);
     });
-    const progById = (id) => schemePrograms.find((x) => x.id === id);
-    const pl = $('cmPrereqList'); pl.innerHTML = '';
-    const pre = ins.map((r) => `← ${progById(r.from).name}: ${schemeRelationTypes[r.type].label}`);
-    (pre.length ? pre : ['Самостоятельная точка входа']).forEach((t) => {
-      const li = document.createElement('li'); li.textContent = t; pl.appendChild(li);
-    });
-    const nl = $('cmNextList'); nl.innerHTML = '';
-    const nxt = outs.map((r) => `${progById(r.to).name} — ${schemeRelationTypes[r.type].label}`);
-    (nxt.length ? nxt : ['Нет исходящих связей']).forEach((t) => {
-      const li = document.createElement('li'); li.textContent = t; nl.appendChild(li);
-    });
-    const credit = { P06: 1, P07: 1, P08: 1 }[p.id]
-      ? 'Клиническая база (P01) встроена в программу и перезачитывается целиком при подтверждённом освоении.'
-      : ({ P02: 1, P03: 1, P04: 1, P05: 1 }[p.id]
-        ? 'Общие блоки с клинической базой перезачитываются частично при подтверждённом освоении.'
-        : (p.id === 'P01' ? 'База для предметных ПП: полный перезачёт подтверждённого освоения.' : 'Отдельная программа ПК: самостоятельная точка входа.'));
+    // входящие модули программы + её общие модули с другими программами
+    const fillList = (el, rows, empty) => {
+      el.innerHTML = '';
+      (rows.length ? rows : [empty]).forEach((t) => {
+        const li = document.createElement('li'); li.textContent = t; el.appendChild(li);
+      });
+    };
+    const mods = (programs[programKeyByMatrixId[p.id]] || []).map(nodeBy).filter(Boolean);
+    fillList($('cmModulesList'), mods.map((n) => n.label), 'Модули уточняются');
+    fillList($('cmSharedList'),
+      mods.filter((n) => n.shared).map((n) => `${n.label} — также в: ${n.programs.filter((x) => x !== p.name).join(', ')}`),
+      'Нет общих модулей');
+    const credit = ['stress-trauma', 'sexology', 'addictology'].includes(p.id)
+      ? 'Клиническая база — ступени I–II «Психиатрии для психологов»: встроена в программу и перезачитывается целиком при подтверждённом освоении.'
+      : (['cbt', 'hypnosis', 'transpersonal', 'pfc'].includes(p.id)
+        ? 'Общие блоки с клинической базой (ступень I) перезачитываются частично при подтверждённом освоении.'
+        : (p.id === 'psy1'
+          ? 'Ступень I полного маршрута (240 ч): клиническая база, полностью перезачитываемая в предметные ПП.'
+          : (p.id === 'psy2'
+            ? 'Ступень II полного маршрута (240 ч): строится на ступени I, ведёт к дифференциальной клинике.'
+            : (p.id === 'orgbiz'
+              ? 'Направление в подготовке: часы и условия уточняются.'
+              : 'Отдельная программа ПК: самостоятельная точка входа.'))));
     $('cmCreditInfo').innerHTML = credit + '<br><br>Перезачёт уменьшает оставшийся маршрут, но не является процентом скидки.';
   }
 
@@ -734,21 +762,9 @@ export function initCurriculumMap() {
      ['мостов / надстроек', ids.filter((x) => x.type === 'bridge' || x.type === 'addon').length]].forEach(([k, v]) => {
       const s = document.createElement('span'); s.className = 'cm-tag'; s.textContent = `${k}: ${v}`; tags.appendChild(s);
     });
-    const pl = $('cmPrereqList'); pl.innerHTML = '';
-    const starts = clusterMembers(b.name).filter((x) => incoming(x.id).length === 0).slice(0, 8);
-    (starts.length ? starts : [{ label: 'Нет отдельной стартовой точки' }]).forEach((x) => {
-      const li = document.createElement('li'); li.textContent = x.label; pl.appendChild(li);
-    });
-    const nl = $('cmNextList'); nl.innerHTML = '';
-    const next = [];
-    if (b.programs.some((p) => ['Последствия стресса и психотравмы', 'Сексология', 'Аддиктология'].includes(p))) next.push('Можно подключать методы психотерапии и/или ПФК через мостовые модули');
-    if (b.programs.includes('Клинические аспекты в деятельности психолога')) next.push('Открывает клинические специализации и прикладные программы');
-    if (b.programs.includes('ПФК')) next.push('Ведёт к прикладным мостам ПФК в стрессе, сексологии и других областях');
-    if (b.programs.some((p) => ['КПТ', 'Гипноз', 'Трансперсональная психотерапия'].includes(p))) next.push('Метод применяется в предметных областях через мосты');
-    if (!next.length) next.push('Выберите модуль внутри кластера, чтобы увидеть зависимости.');
-    next.forEach((x) => { const li = document.createElement('li'); li.textContent = x; nl.appendChild(li); });
+    $('cmModulesList').innerHTML = '<li>—</li>';
+    $('cmSharedList').innerHTML = '<li>—</li>';
     $('cmCreditInfo').innerHTML = 'Модули с жёлтым кольцом можно подтвердить на вступительном испытании теоретически. Общие модули перезачитываются между программами.';
-    $('cmToggleDoneBtn').textContent = 'Отметить освоенным';
   }
   function showDetails(n) {
     nodeTitleEl.textContent = n.label;
@@ -758,35 +774,12 @@ export function initCurriculumMap() {
     const tags = $('cmProgramTags'); tags.innerHTML = '';
     n.programs.forEach((p) => { const s = document.createElement('span'); s.className = 'cm-tag'; s.textContent = p; tags.appendChild(s); });
     if (n.shared) { const s = document.createElement('span'); s.className = 'cm-tag shared'; s.textContent = 'общий модуль'; tags.appendChild(s); }
-    const pl = $('cmPrereqList'); pl.innerHTML = '';
-    const ins = incoming(n.id);
-    (ins.length ? ins : [{ label: 'Нет обязательных входов' }]).forEach((x) => { const li = document.createElement('li'); li.textContent = x.label; pl.appendChild(li); });
-    const nl = $('cmNextList'); nl.innerHTML = '';
-    const outs = outgoing(n.id);
-    (outs.length ? outs : [{ label: 'Нет следующего шага' }]).forEach((x) => { const li = document.createElement('li'); li.textContent = x.label; nl.appendChild(li); });
+    $('cmModulesList').innerHTML = '<li>—</li>';
+    $('cmSharedList').innerHTML = '<li>—</li>';
     $('cmCreditInfo').innerHTML = n.exam
       ? '<span class="cm-tag exam">теория: кандидат на вступительный зачёт / скидку</span><br><br>Практический компонент, если он есть, подтверждается отдельно.'
       : 'Автоматический перезачёт не задан. Если модуль уже пройден внутри РУСАЛЕН, повторно его не проходить.';
-    $('cmToggleDoneBtn').textContent = done.has(n.id) ? 'Снять отметку' : 'Отметить освоенным';
   }
-  function updateProgress() {
-    const arr = activeProgram ? programs[activeProgram] : null;
-    const fill = $('cmProgressFill'), txt = $('cmProgressText');
-    if (!arr) { fill.style.width = '0%'; txt.textContent = 'Выберите программу сверху.'; return; }
-    const total = arr.length, have = arr.filter((x) => done.has(x)).length, pct = Math.round((have / total) * 100);
-    fill.style.width = pct + '%';
-    txt.textContent = `${activeProgram}: освоено ${have} из ${total} модулей (${pct}%).`;
-  }
-  on($('cmToggleDoneBtn'), 'click', () => {
-    if (!selectedId) return;
-    done.has(selectedId) ? done.delete(selectedId) : done.add(selectedId);
-    localStorage.setItem('rusalenDone', JSON.stringify([...done]));
-    showDetails(nodeBy(selectedId)); render();
-  });
-  on($('cmClearDoneBtn'), 'click', () => {
-    done.clear(); localStorage.removeItem('rusalenDone');
-    if (selectedId) showDetails(nodeBy(selectedId)); render();
-  });
 
   // ---------- тулбар ----------
   Object.keys(programs).forEach((p) => {
@@ -811,12 +804,13 @@ export function initCurriculumMap() {
     e.currentTarget.classList.toggle('active', schemeMode);
     e.currentTarget.textContent = schemeMode ? '2D / Изометрия' : 'Изометрия / 2D';
     $('cmLegend').style.display = schemeMode ? 'none' : '';
-    if (!schemeMode) { view(-.78, -.42, .72); } else { schemeSelected = null; schemeHover = null; render(); }
+    if (!schemeMode) { view(-.78, -.42, .72); }
+    else { schemeSelected = null; schemeHover = null; schemeScale = 1; panX = 0; panY = 20; render(); }
   });
   on($('cmResetBtn'), 'click', () => {
     selectedCluster = null; selectedId = null; activeProgram = null;
     programSelect.value = 'Все программы'; searchEl.value = '';
-    focusOnly = false; schemeMode = false; schemeSelected = null; schemeHover = null;
+    focusOnly = false; schemeMode = false; schemeSelected = null; schemeHover = null; schemeScale = 1;
     $('cmLegend').style.display = '';
     $('cmCollapseBtn').classList.remove('active');
     const isoBtn = $('cmIsoBtn'); isoBtn.classList.remove('active'); isoBtn.textContent = 'Изометрия / 2D';

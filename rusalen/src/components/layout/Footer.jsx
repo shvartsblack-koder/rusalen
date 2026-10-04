@@ -174,6 +174,10 @@ export default function Footer() {
             Информация, размещённая на сайте, носит информационный характер и не заменяет консультацию квалифицированного специалиста.
           </p>
           <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
+            АНО «Международный исследовательский центр РУСАЛЕН» · ИНН 7736341108 · ОГРН 1227700255408 ·
+            Лицензия на образовательную деятельность № Л035-01298-77/01005950 от 22.12.2023
+          </p>
+          <p className="text-[11px] font-mono text-muted-foreground/60 leading-relaxed">
             <Link to="/privacy" className="underline hover:text-foreground">Политика конфиденциальности</Link>
             {' · '}
             Финансовые сервисы PsyPay доступны после прохождения верификации и могут зависеть от юрисдикции, комплаенс-проверки

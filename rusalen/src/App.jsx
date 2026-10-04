@@ -24,7 +24,8 @@ import International from './pages/science/International';
 import Education from './pages/Education';
 import EducationPrograms from './pages/EducationPrograms';
 import EducationVisualization from './pages/EducationVisualization';
-import PsychiatryForPsychologists from './pages/PsychiatryForPsychologists';
+import PsychiatryProgram from './pages/education/PsychiatryProgram';
+import EducationTeam from './pages/education/Team';
 import EducationCategory from './pages/EducationCategory';
 import PsyMedia from './pages/PsyMedia';
 import PsyTorg from './pages/PsyTorg';
@@ -79,9 +80,11 @@ function App() {
                 <Route path="/science/partnerships" element={<Science />} />
                 <Route path="/education" element={<Education />} />
                 <Route path="/education/programs" element={<EducationPrograms />} />
+                <Route path="/education/programs/psychiatry-for-psychologists" element={<PsychiatryProgram />} />
+                <Route path="/education/team" element={<EducationTeam />} />
                 <Route path="/education/visualization" element={<EducationVisualization />} />
                 <Route path="/education/:category" element={<EducationCategory />} />
-                <Route path="/psychiatry-for-psychologists" element={<PsychiatryForPsychologists />} />
+                <Route path="/psychiatry-for-psychologists" element={<Navigate to="/education/programs/psychiatry-for-psychologists" replace />} />
                 <Route path="/psypedia" element={<Navigate to="/library" replace />} />
                 <Route path="/psymedia" element={<PsyMedia />} />
                 <Route path="/psytorg" element={<PsyTorg />} />

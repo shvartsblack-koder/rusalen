@@ -23,18 +23,13 @@ export default function CurriculumMap() {
         <div id="cmStage" className="relative overflow-hidden flex-1 min-h-[380px] min-w-0">
           <canvas id="cmScene" />
           <div id="cmLegend" className="absolute left-3.5 top-3.5 flex flex-wrap gap-1.5 max-w-[75%] pointer-events-none" />
-          <div className="absolute left-3.5 bottom-3.5 bg-[rgba(8,17,31,0.55)] border border-white/10 rounded-[10px] px-3 py-2.5 text-[11px] text-[#c7d2e3] pointer-events-none leading-relaxed">
-            <b>Изометрия:</b> тянуть — вращение · колесо — масштаб · Shift+тянуть — сдвиг · клик по модулю — фокус кластера<br />
-            <b>2D-сборка:</b> клик по программе — её связи и перезачёт · тянуть — сдвиг схемы<br />
-            <b>Оси (3D):</b> X — способ работы · Y — фундамент → интеграция · Z — предметная специализация
-          </div>
         </div>
 
         <aside className="h-[38vh] lg:h-auto lg:w-[340px] shrink-0 overflow-auto p-4 bg-[rgba(9,17,31,0.93)] border-t lg:border-t-0 lg:border-l border-white/10">
           <div className="text-[11px] uppercase tracking-[0.12em] text-[#7f93af] mb-2">Выбранный модуль</div>
           <div id="cmNodeTitle" className="text-lg font-bold leading-tight mb-2">Нажмите на любой блок</div>
           <div id="cmNodeMeta" className="text-xs text-[#a9b8cd] leading-relaxed whitespace-pre-line">
-            Карта интерактивна. Выберите модуль или большой пузырь программы, чтобы увидеть маршрут, связи и перезачёт.
+            Карта интерактивна. Выберите модуль, программу или кластер, чтобы увидеть программы, контексты и правила перезачёта.
           </div>
 
           <div className="cm-card">
@@ -44,30 +39,16 @@ export default function CurriculumMap() {
             </div>
           </div>
           <div className="cm-card">
-            <h3>Что нужно пройти раньше</h3>
-            <ul id="cmPrereqList"><li>—</li></ul>
+            <h3>Входящие модули</h3>
+            <ul id="cmModulesList"><li>—</li></ul>
           </div>
           <div className="cm-card">
-            <h3>Куда ведёт дальше</h3>
-            <ul id="cmNextList"><li>—</li></ul>
+            <h3>Общие модули (с кем)</h3>
+            <ul id="cmSharedList"><li>—</li></ul>
           </div>
           <div className="cm-card">
             <h3>Перезачёт / вступительное испытание</h3>
             <div id="cmCreditInfo" className="text-[11px] text-[#8fa2bd] leading-relaxed">—</div>
-          </div>
-          <div className="cm-card">
-            <h3>Мой маршрут</h3>
-            <div className="text-[11px] text-[#8fa2bd] leading-relaxed">
-              Можно отмечать уже освоенные модули. Статус хранится только в этом браузере.
-            </div>
-            <div className="h-2 bg-[#1e2b40] rounded-full overflow-hidden mt-2">
-              <div id="cmProgressFill" className="h-full w-0" style={{ background: 'linear-gradient(90deg,#60a5fa,#4ade80)' }} />
-            </div>
-            <div id="cmProgressText" className="text-[11px] text-[#9eb0c8] mt-1.5">Выберите программу сверху.</div>
-            <div className="flex gap-2 mt-2.5">
-              <button id="cmToggleDoneBtn" className="cm-btn flex-1">Отметить освоенным</button>
-              <button id="cmClearDoneBtn" className="cm-btn flex-1">Очистить</button>
-            </div>
           </div>
           <div className="cm-card">
             <h3>Легенда связей</h3>
@@ -76,7 +57,6 @@ export default function CurriculumMap() {
               <b className="text-[#67e8f9]">Голубая:</b> общий модуль / переиспользуется<br />
               <b className="text-[#f9a8d4]">Розовая пунктирная:</b> профильная надстройка / bridge<br />
               <b className="text-[#94a3b8]">Серая точечная:</b> смысловая связь, не prerequisite<br />
-              <b className="text-[#fde047]">Жёлтое кольцо:</b> теорию можно вынести на вступительное испытание<br />
               <span className="text-[#7f93af]">В 2D-сборке:</span><br />
               <b className="text-[#57d6a2]">Зелёная:</b> клиническая база — полный перезачёт<br />
               <b className="text-[#b885ff]">Фиолетовая:</b> метод → профильное применение<br />

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
+import { Network } from 'lucide-react';
 import ProgramFilters from '@/components/dpo/ProgramFilters';
-import OpenProgramCard from '@/components/dpo/OpenProgramCard';
 import AnnouncementCard from '@/components/dpo/AnnouncementCard';
+import ProgramStatusCard from '@/components/education/ProgramStatusCard';
 import { PROGRAMS, MAX_HOURS } from '@/components/dpo/programsData';
 
-const PAGE_TITLE = 'Выбрать направление — каталог программ ДПО РУСАЛЕН';
+const PAGE_TITLE = 'Выбрать программу — каталог ДПО РУСАЛЕН';
 const PAGE_DESCRIPTION =
-  'Каталог направлений ДПО РУСАЛЕН: фильтр по часам, документу об обучении и статусу программы. Психиатрия для психологов и анонсы новых программ.';
+  'Каталог программ ДПО РУСАЛЕН: активные программы и ближайшие запуски, направления в подготовке. Фильтр по часам и документу об обучении.';
 
 export default function EducationPrograms() {
   const [hoursRange, setHoursRange] = useState([0, MAX_HOURS]);
@@ -36,7 +38,8 @@ export default function EducationPrograms() {
 
   const filtered = PROGRAMS.filter((p) => {
     if (hoursActive) {
-      if (!p.hours || p.hours < hoursRange[0] || p.hours > hoursRange[1]) return false;
+      const total = p.hours?.total;
+      if (!total || total < hoursRange[0] || total > hoursRange[1]) return false;
     }
     if (checks.length) {
       const matches = checks.some((c) =>
@@ -46,6 +49,9 @@ export default function EducationPrograms() {
     }
     return true;
   });
+
+  const active = filtered.filter((p) => p.status === 'open' || p.status === 'upcoming');
+  const announced = filtered.filter((p) => p.status === 'announced');
 
   const toggleCheck = (value) =>
     setChecks((prev) => (prev.includes(value) ? prev.filter((c) => c !== value) : [...prev, value]));
@@ -65,13 +71,20 @@ export default function EducationPrograms() {
               Каталог программ
             </span>
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-4">
-              Выбрать <span className="text-gold-gradient">направление</span>
+              Выбрать <span className="text-gold-gradient">программу</span>
             </h1>
             <p className="text-muted-foreground max-w-2xl leading-relaxed">
-              Начните с задачи, которую хотите научиться решать, и отфильтруйте программы по объёму
-              часов и нужному документу об обучении. Анонсы показывают направления в подготовке — по
-              ним можно запросить информацию о запуске.
+              Сначала — программы с открытым набором и ближайшие запуски, ниже — направления в
+              подготовке. Отфильтруйте по объёму часов и нужному документу об обучении; по анонсам
+              можно запросить информацию о запуске.
             </p>
+            <Link
+              to="/education/visualization"
+              className="inline-flex items-center gap-1.5 mt-4 text-sm text-primary underline underline-offset-4 hover:opacity-80"
+            >
+              <Network size={15} />
+              Посмотреть карту связей программ
+            </Link>
           </div>
         </section>
         <section className="pb-20">
@@ -99,15 +112,25 @@ export default function EducationPrograms() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filtered.map((p, i) =>
-                  p.status === 'open' ? (
-                    <OpenProgramCard key={p.id} program={p} className="md:col-span-2 lg:col-span-3" />
-                  ) : (
-                    <AnnouncementCard key={p.id} item={p} delay={(i % 3) * 0.08} />
-                  )
+              <>
+                {active.length > 0 && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+                    {active.map((p) => (
+                      <ProgramStatusCard key={p.id} program={p} />
+                    ))}
+                  </div>
                 )}
-              </div>
+                {announced.length > 0 && (
+                  <div>
+                    <h2 className="font-display text-xl font-bold mb-4">Направления в подготовке</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {announced.map((p, i) => (
+                        <AnnouncementCard key={p.id} item={p} delay={(i % 3) * 0.08} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>
