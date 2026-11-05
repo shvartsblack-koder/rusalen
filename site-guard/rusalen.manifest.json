@@ -21,7 +21,8 @@
       "src/components/CookieConsent.jsx",
       "src/pages/PrivacyPolicy.jsx",
       "src/lib/AuthContext.jsx",
-      "src/components/LeadModal.jsx"
+      "src/components/LeadModal.jsx",
+      "src/api/base44Client.js"
     ],
     "build": {
       "commands": [
@@ -30,7 +31,8 @@
       ],
       "env": {
         "VITE_BASE": "/",
-        "VITE_PROJECT_NAME": "rusalen"
+        "VITE_PROJECT_NAME": "rusalen",
+        "VITE_BASE44_SERVER_URL": "https://api.xn--80akrjlgn.xn--p1ai"
       }
     },
     "requiredPatterns": [
@@ -249,6 +251,7 @@
       "rusalen/public/og-rusalen.png",
       "rusalen/public/robots.txt",
       "rusalen/public/sitemap.xml",
+      "rusalen/src/api/base44Client.js",
       "rusalen/src/components/CookieConsent.jsx",
       "rusalen/src/components/LeadModal.jsx",
       "rusalen/src/lib/AuthContext.jsx",

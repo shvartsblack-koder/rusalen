@@ -20,7 +20,8 @@
       "src/components/CookieConsent.jsx",
       "src/pages/PrivacyPolicy.jsx",
       "src/lib/AuthContext.jsx",
-      "src/components/LeadModal.jsx"
+      "src/components/LeadModal.jsx",
+      "src/api/base44Client.js"
     ],
     "build": {
       "commands": [
@@ -29,7 +30,8 @@
       ],
       "env": {
         "VITE_BASE": "/живица/",
-        "VITE_PROJECT_NAME": "jivica"
+        "VITE_PROJECT_NAME": "jivica",
+        "VITE_BASE44_SERVER_URL": "https://api.xn--80akrjlgn.xn--p1ai"
       }
     },
     "requiredPatterns": [
@@ -151,6 +153,7 @@
       "jivica/public/favicon-48.png",
       "jivica/public/favicon.png",
       "jivica/public/og-jivica.png",
+      "jivica/src/api/base44Client.js",
       "jivica/src/components/CookieConsent.jsx",
       "jivica/src/components/LeadModal.jsx",
       "jivica/src/lib/AuthContext.jsx",
