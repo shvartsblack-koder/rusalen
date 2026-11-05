@@ -21,7 +21,8 @@
       "src/components/CookieConsent.jsx",
       "src/pages/PrivacyPolicy.jsx",
       "src/lib/AuthContext.jsx",
-      "src/components/LeadModal.jsx"
+      "src/components/LeadModal.jsx",
+      "src/api/base44Client.js"
     ],
     "build": {
       "commands": [
@@ -30,7 +31,8 @@
       ],
       "env": {
         "VITE_BASE": "/",
-        "VITE_PROJECT_NAME": "rusalen"
+        "VITE_PROJECT_NAME": "rusalen",
+        "VITE_BASE44_SERVER_URL": "https://api.xn--80akrjlgn.xn--p1ai"
       }
     },
     "requiredPatterns": [
@@ -157,7 +159,7 @@
     },
     "files": {
       ".github/workflows/base44-sync.yml": "4cdf154ec72add5cd5a0483031031521395f0549336287a569226b38c57f25dc",
-      ".github/workflows/deploy.yml": "31f6c3b69c64fb1f9763f16dd669e37bfd8e4ff7be46d4526581d663dfa25fc7",
+      ".github/workflows/deploy.yml": "16776cc52bc7898dc3bf320e8009dfd8109de694182f21677089872effec5b34",
       ".github/workflows/site-guard.yml": "1d744fa2def8e1a7631f1d078ff00665e95c32885675e0a380f4902abae8eb76",
       "rusalen/public/apple-touch-icon.png": "c3632065f95c2cbb258b19690314366b323aa13e2e8398c30107c97fc92ca4b0",
       "rusalen/public/favicon-32.png": "1faefe36c8b38dc60d11949d1c9eb0de310d10449aeeb1e1e44153a108a2e125",
@@ -249,6 +251,7 @@
       "rusalen/public/og-rusalen.png",
       "rusalen/public/robots.txt",
       "rusalen/public/sitemap.xml",
+      "rusalen/src/api/base44Client.js",
       "rusalen/src/components/CookieConsent.jsx",
       "rusalen/src/components/LeadModal.jsx",
       "rusalen/src/lib/AuthContext.jsx",

@@ -32,6 +32,7 @@ jobs:
           npm install
           npm run build
         env:
+          VITE_BASE44_SERVER_URL: https://api.xn--80akrjlgn.xn--p1ai
           VITE_BASE: ${{ vars.VITE_BASE_RUSALEN || '/rusalen/' }}
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
           VITE_PROJECT_NAME: rusalen
@@ -43,6 +44,7 @@ jobs:
           npm install
           npm run build
         env:
+          VITE_BASE44_SERVER_URL: https://api.xn--80akrjlgn.xn--p1ai
           VITE_BASE: ${{ vars.VITE_BASE_JIVICA || '/rusalen/jivica/' }}
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
           VITE_PROJECT_NAME: jivica
@@ -52,6 +54,7 @@ jobs:
           node site-guard/guard.mjs spa-pages
           node site-guard/guard.mjs verify --dist --require-webhook
         env:
+          VITE_BASE44_SERVER_URL: https://api.xn--80akrjlgn.xn--p1ai
           VITE_LEADS_WEBHOOK_URL: ${{ secrets.VITE_LEADS_WEBHOOK_URL }}
 
       - name: Merge builds
