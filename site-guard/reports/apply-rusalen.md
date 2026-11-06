@@ -2,13 +2,15 @@
 
 Архив: rusalen.zip, файлов: 204. Режим: трёхстороннее слияние.
 
-### Защищённые файлы: в архиве другая версия, оставлена наша (перенести полезное вручную) (3)
+### Защищённые файлы: в архиве другая версия, оставлена наша (перенести полезное вручную) (4)
 - rusalen/index.html
+- rusalen/src/api/base44Client.js
 - rusalen/src/lib/AuthContext.jsx
 - rusalen/vite.config.js
 
-### Добавлено из Base44 (1)
-- rusalen/src/lib/authMfa.js
+### Обновлено из Base44 (2)
+- rusalen/package-lock.json
+- rusalen/package.json
 
 ### Оставлена наша версия (Base44 файл не менял) (6)
 - rusalen/src/App.jsx
