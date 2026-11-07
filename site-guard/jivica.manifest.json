@@ -62,8 +62,8 @@
     ]
   },
   "baseline": {
-    "snapshotAt": "2026-09-28T13:43:20.571Z",
-    "gitCommit": "e3ed801",
+    "snapshotAt": "2026-11-07T08:13:38.986Z",
+    "gitCommit": "c9cbb29",
     "routes": [
       "/",
       "/feedback",
@@ -95,8 +95,10 @@
       "src/pages/Feedback.jsx"
     ],
     "formAllowlist": [
+      "src/components/MfaMethodSetup.jsx",
       "src/pages/ForgotPassword.jsx",
       "src/pages/Login.jsx",
+      "src/pages/Mfa.jsx",
       "src/pages/Register.jsx",
       "src/pages/ResetPassword.jsx"
     ],
